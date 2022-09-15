@@ -16,7 +16,6 @@ dnf -y install \
 dnf -y install \
     alacritty \
     clipman \
-    firefox \
     fzf \
     gammastep \
     grim \
@@ -100,7 +99,6 @@ dnf -y install \
     papirus-icon-theme \
     podman \
     powertop \
-    quodlibet \
     ripgrep \
     sshfs \
     toolbox \
@@ -168,20 +166,6 @@ dnf -y install \
     xfig \
     --exclude evince
 
-# RPMfusion
-dnf -y install \
-    https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
-    https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-    
-dnf -y groupupdate \
-    multimedia --setop="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin
-
-# Install mpv from RPMfusion
-dnf -y install \
-    ffmpeg \
-    mpv \
-    youtube-dl
-    
 # Flathub
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
@@ -189,8 +173,11 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 flatpak install -y flathub \
     com.github.tchx84.Flatseal \
     im.riot.Riot \
+    io.github.quodlibet.QuodLibet \
+    io.mpv.Mpv \
     org.chromium.Chromium \
-    org.libreoffice.LibreOffice
+    org.libreoffice.LibreOffice \
+    org.mozilla.firefox
 
 # Rebuild initramfs
 dracut -f
