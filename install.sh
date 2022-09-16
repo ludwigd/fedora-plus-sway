@@ -101,6 +101,7 @@ dnf -y install \
     powertop \
     ripgrep \
     sshfs \
+    starship \
     toolbox \
     virt-manager \
     xournalpp \
