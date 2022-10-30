@@ -78,6 +78,7 @@ dnf -y install \
 dnf -y install \
     adwaita-gtk2-theme \
     adwaita-icon-theme \
+    aerc \
     borgbackup \
     dia \
     distrobox \
@@ -91,10 +92,7 @@ dnf -y install \
     imv \
     isync \
     keepassxc \
-    lynx \
     maildir-utils \
-    msmtp \
-    mutt \
     neofetch \
     papirus-icon-theme \
     podman \
