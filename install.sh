@@ -25,10 +25,11 @@ dnf -y install \
     libwayland-egl \
     light \
     lxpolkit \
-    pcmanfm \
     plymouth-system-theme \
     python3-i3ipc \
+    ranger \
     sway \
+    udiskie \
     wev \
     wofi \
     xlsclients \
