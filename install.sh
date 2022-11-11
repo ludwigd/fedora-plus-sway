@@ -173,7 +173,7 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 flatpak install -y flathub \
     com.github.tchx84.Flatseal \
     im.riot.Riot \
-    io.github.quodlibet.QuodLibet \
+    io.github.cmus.cmus \
     io.mpv.Mpv \
     org.chromium.Chromium \
     org.libreoffice.LibreOffice \
