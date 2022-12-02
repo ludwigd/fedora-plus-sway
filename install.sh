@@ -100,7 +100,6 @@ dnf -y install \
     powertop \
     ripgrep \
     sshfs \
-    starship \
     toolbox \
     virt-manager \
     xournalpp \
@@ -178,6 +177,9 @@ flatpak install -y flathub \
     org.chromium.Chromium \
     org.libreoffice.LibreOffice \
     org.mozilla.firefox
+
+# Install starship form the web
+curl -sS https://starship.rs/install.sh | sh
 
 # Rebuild initramfs
 dracut -f
