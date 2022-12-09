@@ -24,7 +24,7 @@ dnf -y install \
     kanshi \
     libwayland-egl \
     light \
-    lxpolkit \
+    mate-polkit \
     plymouth-system-theme \
     python3-i3ipc \
     ranger \
@@ -177,9 +177,6 @@ flatpak install -y flathub \
     org.chromium.Chromium \
     org.libreoffice.LibreOffice \
     org.mozilla.firefox
-
-# Install starship form the web
-curl -sS https://starship.rs/install.sh | sh
 
 # Rebuild initramfs
 dracut -f
