@@ -14,24 +14,23 @@ dnf -y install \
 
 # Desktop
 dnf -y install \
-    alacritty \
     clipman \
+    foot \
+    fuzzel \
     fzf \
     gammastep \
     grim \
     i3status \
     jq \
     kanshi \
-    libwayland-egl \
     light \
+    lxmenu-data \
     mate-polkit \
     plymouth-system-theme \
     python3-i3ipc \
-    ranger \
     sway \
     udiskie \
     wev \
-    wofi \
     xlsclients \
     xorg-x11-server-Xwayland
 
@@ -79,7 +78,6 @@ dnf -y install \
 dnf -y install \
     adwaita-gtk2-theme \
     adwaita-icon-theme \
-    aerc \
     borgbackup \
     dia \
     distrobox \
@@ -91,11 +89,12 @@ dnf -y install \
     gnome-themes-extra \
     htop \
     imv \
-    isync \
+    inkscape \
     keepassxc \
-    maildir-utils \
+    lynx \
+    mutt \
     neofetch \
-    papirus-icon-theme \
+    pcmanfm \
     podman \
     powertop \
     ripgrep \
