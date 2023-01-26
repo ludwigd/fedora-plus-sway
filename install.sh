@@ -161,6 +161,7 @@ dnf -y install \
     texlive-collection-pstricks \
     texlive-collection-publishers \
     texlive-collection-xetex \
+    texstudio \
     xfig \
     --exclude evince
 
