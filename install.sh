@@ -87,6 +87,7 @@ dnf -y install \
     fish \
     flatpak \
     gimp \
+    gnome-icon-theme \
     gnome-themes-extra \
     htop \
     imv \
