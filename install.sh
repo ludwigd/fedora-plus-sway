@@ -56,6 +56,7 @@ dnf -y install \
     iwl7260-firmware \
     NetworkManager-openvpn \
     NetworkManager-openvpn-gnome \
+    NetworkManager-tui \
     NetworkManager-wifi \
     network-manager-applet \
     nm-connection-editor \
