@@ -16,8 +16,6 @@ dnf -y install \
 dnf -y install \
     clipman \
     foot \
-    fuzzel \
-    fzf \
     gammastep \
     grim \
     i3status \
@@ -26,11 +24,12 @@ dnf -y install \
     light \
     lxmenu-data \
     mate-polkit \
-    plymouth-system-theme \
+    pcmanfm \
     python3-i3ipc \
     sway \
     udiskie \
     wev \
+    wofi \
     xlsclients \
     xorg-x11-server-Xwayland
 
@@ -56,10 +55,10 @@ dnf -y install \
     iwl7260-firmware \
     NetworkManager-openvpn \
     NetworkManager-openvpn-gnome \
-    NetworkManager-tui \
     NetworkManager-wifi \
     network-manager-applet \
     nm-connection-editor \
+    nm-connection-editor-desktop \
     openssl \
     pavucontrol \
     pipewire \
@@ -96,7 +95,6 @@ dnf -y install \
     lynx \
     mutt \
     neofetch \
-    pcmanfm \
     podman \
     powertop \
     ripgrep \
@@ -167,8 +165,9 @@ dnf -y install \
     xfig \
     --exclude evince
 
-# Flathub
+# Add, enable and unfilter Flathub
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak remote-modify --enable --no-filter flathub
 
 # Install some Flatpaks
 flatpak install -y flathub \
