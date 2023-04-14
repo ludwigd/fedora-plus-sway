@@ -16,6 +16,7 @@ dnf -y install \
 dnf -y install \
     clipman \
     foot \
+    fuzzel \
     gammastep \
     grim \
     i3status \
@@ -27,9 +28,7 @@ dnf -y install \
     pcmanfm \
     python3-i3ipc \
     sway \
-    udiskie \
     wev \
-    wofi \
     xlsclients \
     xorg-x11-server-Xwayland
 
@@ -56,7 +55,6 @@ dnf -y install \
     NetworkManager-openvpn \
     NetworkManager-openvpn-gnome \
     NetworkManager-wifi \
-    network-manager-applet \
     nm-connection-editor \
     nm-connection-editor-desktop \
     openssl \
@@ -136,6 +134,8 @@ dnf -y install \
     aspell \
     aspell-de \
     aspell-en \
+    hunspell \
+    hunspell-de \
     ImageMagick \
     pandoc \
     rubygem-asciidoctor-pdf \
@@ -165,9 +165,9 @@ dnf -y install \
     xfig \
     --exclude evince
 
-# Add, enable and unfilter Flathub
+# Add and enable Flathub
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flatpak remote-modify --enable --no-filter flathub
+flatpak remote-modify --enable flathub
 
 # Install some Flatpaks
 flatpak install -y flathub \
