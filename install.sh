@@ -92,7 +92,6 @@ dnf -y install \
     keepassxc \
     lynx \
     mutt \
-    neofetch \
     podman \
     powertop \
     ripgrep \
