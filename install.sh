@@ -105,28 +105,39 @@ dnf -y install \
     zathura-plugins-all \
     zathura-fish-completion
 
-# Development Tools
+# (Kernel) Development Tools
 dnf -y install \
     autoconf \
     automake \
+    bc \
     binutils \
+    bison \
     cargo \
     cmake \
+    ctags \
+    dwarves \
+    elfutils-libelf-devel \
+    flex \
     gcc \
     gcc-c++ \
     gdb \
     git \
+    git-email \
     glibc-devel \
     java-latest-openjdk \
     java-latest-openjdk-devel \
     javacc \
     make \
+    ncurses-devel \
+    openssl-devel \
     patch \
     patchutils \
+    python3 \
     python3-pip \
     python3-virtualenv \
     rust \
-    strace
+    strace \
+    zstd
 
 # TeXlive and publishing
 dnf -y install \
