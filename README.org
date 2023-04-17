@@ -14,4 +14,4 @@ curl -L https://raw.githubusercontent.com/ludwigd/fedora-plus-sway/main/install.
 chmod +x install.sh
 sudo ./install.sh
    #+END_SRC
-5. Go and get coffee. The system will reboot automatically after the script is finished.
+5. Go and get coffee. The system will reboot automatically after the script has finished.
