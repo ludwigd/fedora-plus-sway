@@ -12,23 +12,21 @@ dnf -y install \
     @Standard \
     vim-enhanced
 
-# Desktop
+# Basic Desktop
 dnf -y install \
     clipman \
     foot \
-    fuzzel \
     gammastep \
     grim \
     i3status \
     jq \
     kanshi \
     light \
-    lxmenu-data \
-    mate-polkit \
-    pcmanfm \
+    plymouth-system-theme \
     python3-i3ipc \
     sway \
     wev \
+    wofi \
     xlsclients \
     xorg-x11-server-Xwayland
 
@@ -76,11 +74,11 @@ dnf -y install \
 dnf -y install \
     adwaita-gtk2-theme \
     adwaita-icon-theme \
+    android-file-transfer \
+    android-tools \
     borgbackup \
-    dia \
     distrobox \
     emacs \
-    fd-find \
     fish \
     flatpak \
     gimp \
@@ -90,14 +88,16 @@ dnf -y install \
     imv \
     inkscape \
     keepassxc \
+    lxmenu-data \
     lynx \
+    mate-poltik \
     mutt \
+    pcmanfm \
     podman \
     powertop \
-    ripgrep \
     sshfs \
-    toolbox \
     virt-manager \
+    wdisplays \
     xournalpp \
     xsane \
     zathura \
