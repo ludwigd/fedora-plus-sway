@@ -22,7 +22,7 @@ dnf -y install \
     jq \
     kanshi \
     light \
-    mate-poltik \
+    mate-polkit \
     python3-i3ipc \
     sway \
     wev \
