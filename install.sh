@@ -22,7 +22,7 @@ dnf -y install \
     jq \
     kanshi \
     light \
-    plymouth-system-theme \
+    mate-poltik \
     python3-i3ipc \
     sway \
     wev \
@@ -49,7 +49,7 @@ dnf -y install \
     bluez \
     gnome-keyring \
     gnome-keyring-pam \
-    iwl7260-firmware \
+    iwlwifi-mvm-firmware \
     NetworkManager-openvpn \
     NetworkManager-openvpn-gnome \
     NetworkManager-wifi \
@@ -87,17 +87,14 @@ dnf -y install \
     htop \
     imv \
     inkscape \
-    keepassxc \
     lxmenu-data \
     lynx \
-    mate-poltik \
     mutt \
     pcmanfm \
     podman \
     powertop \
     sshfs \
     virt-manager \
-    wdisplays \
     xournalpp \
     xsane \
     zathura \
@@ -179,14 +176,37 @@ dnf -y install \
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak remote-modify --enable flathub
 
-# Install some Flatpaks
+# A word about flatpaks: While I prefer distro-provided packages, some
+# are not available in Fedora (mpv, Bitwarden) or are not working as
+# intended because of missing codecs, e.g., Quodlibet, Firefox,
+# Chromium. LibreOffice is installed as a flatpak because I do not
+# trust the documents I have to process with it and hence reduce the
+# risk of local compromise by sandboxing LibreOffice. Okular, when
+# installed as RPM, would draw in a lot of KDE dependencies. As I use
+# it rarely and only for annotating PDFs (otherwise I use Zathura),
+# the Flatpak comes in handy.
+
+# Install some Flatpaks ...
 flatpak install -y flathub \
-    com.github.tchx84.Flatseal \
-    im.riot.Riot \
-    io.github.cmus.cmus \
+    com.bitwarden.desktop \
+    io.github.quodlibet.QuodLibet \
     io.mpv.Mpv \
     org.chromium.Chromium \
+    org.kde.okular \
     org.libreoffice.LibreOffice \
+    org.mozilla.firefox
+
+# ... and alter them
+flatpak override \
+    --unshare=network \
+    --nosocket=pulseaudio \
+    --socket=cups \
+    --nofilesystem=host \
+    --filesystem=home \
+    org.libreoffice.LibreOffice
+
+flatpak override \
+    --env=MOZ_ENABLE_WAYLAND=1 \
     org.mozilla.firefox
 
 # Rebuild initramfs
