@@ -137,7 +137,6 @@ dnf -y install \
 
 # TeXlive and publishing
 dnf -y install \
-    asciidoctor \
     aspell \
     aspell-de \
     aspell-en \
@@ -145,8 +144,6 @@ dnf -y install \
     hunspell-de \
     ImageMagick \
     pandoc \
-    rubygem-asciidoctor-pdf \
-    rubygem-rouge \
     texlive-collection-basic \
     texlive-collection-bibtexextra \
     texlive-collection-binextra \
