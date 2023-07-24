@@ -236,7 +236,7 @@ usage () {
     echo "  enhanced                - an enhanced basic environment"
     echo "  apps [flatpak]          - desktop apps"
     echo "  development             - some programming languages and tools"
-    echo "  publishing              - an opiniated selection of TeXlive collections and tools"
+    echo "  publishing              - an opinionated selection of TeXlive collections and tools"
     echo "  everything [flatpak]    - enhanced + apps +  development + publishing"
     echo "  dotfiles                - install dotfiles (requires git)"
     

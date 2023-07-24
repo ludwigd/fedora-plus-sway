@@ -1,12 +1,21 @@
 #+TITLE: Fedora Plus Sway
 
-Deployment script for a Fedora Linux desktop utilizing the Sway window manager.
+Deployment script for a Fedora Linux desktop utilizing the Sway window
+manager.
 
-* Installation
+The package selection is somewhat opinionated and may not work for you
+personally (applications, tools) or even your system (firmware,
+printer drivers). 
 
-1. Download the /Everything/ ISO from [[https://alt.fedoraproject.org/]] and burn it to CD/DVD/USB.
-2. Follow the installation process. Under "Software Selection" make sure to select "Fedora Custom Operating System" and do not choose additional groups or packages.
-3. After the installation is complete, reboot into the freshly installed system and log in.
+* Usage
+
+1. Download the /Everything/ ISO from [[https://alt.fedoraproject.org/]]
+   and burn it to CD/DVD/USB.
+2. Follow the installation process. Under "Software Selection" make
+   sure to select "Fedora Custom Operating System" and do not choose
+   additional groups or packages.
+3. After the installation is complete, reboot into the freshly
+   installed system and log in.
 4. Run the following commands to execute the deployment script:
 
    #+BEGIN_SRC
