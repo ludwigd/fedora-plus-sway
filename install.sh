@@ -87,9 +87,8 @@ task_enhanced_desktop () {
 	wev \
 	xlsclients
 
-    dnf -y copr enable ludwigd/rofi-mode-sway
-    dnf -y install \
-	rofi-mode-sway
+    dnf -y copr enable ludwigd/sway-supplemental
+    dnf -y install yaws
 }
 
 # Extra desktop apps
