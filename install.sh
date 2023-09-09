@@ -76,7 +76,6 @@ task_enhanced_desktop () {
 	gnome-keyring-pam \
 	gnome-themes-extra \
 	i3status \
-	jq \
 	kanshi \
 	light \
 	lxmenu-data \
@@ -88,7 +87,9 @@ task_enhanced_desktop () {
 	xlsclients
 
     dnf -y copr enable ludwigd/sway-supplemental
-    dnf -y install yaws
+    dnf -y install \
+	swaycaffeine \
+	yaws
 }
 
 # Extra desktop apps
@@ -220,6 +221,14 @@ task_publishing () {
 	--exclude evince
 }
 
+# Updates
+task_update_system () {
+    dnf update -y --refresh
+    if [[ -f "/usr/bin/flatpak" ]]; then
+	flatpak -y update
+    fi
+}
+
 # Dotfiles
 task_dotfiles () {
     echo "Not implemented"
@@ -237,6 +246,7 @@ usage () {
     echo "  development             - some programming languages and tools"
     echo "  publishing              - an opinionated selection of TeXlive collections and tools"
     echo "  everything [flatpak]    - enhanced + apps +  development + publishing"
+    echo "  update                  - install updates (dnf + flatpak)"
     echo "  dotfiles                - install dotfiles (requires git)"
     
     echo -e "\\nApplications affected by the flatpak parameter:"
@@ -257,10 +267,6 @@ assure_root () {
     fi
 }
 
-update_system () {
-    dnf update -y --refresh
-}
-
 main () {
     local cmd=$1
 
@@ -268,27 +274,21 @@ main () {
 	usage
     elif [[ $cmd == "basic" ]]; then
 	assure_root
-	update_system
 	task_basic_desktop
     elif [[ $cmd == "enhanced" ]]; then
 	assure_root
-	update_system
 	task_enhanced_desktop
     elif [[ $cmd == "apps" ]]; then
 	assure_root
-	update_system
 	task_apps "$2"
     elif [[ $cmd == "development" ]]; then
 	assure_root
-	update_system
 	task_development
     elif [[ $cmd == "publishing" ]]; then
 	assure_root
-	update_system
 	task_publishing
     elif [[ $cmd == "everything" ]]; then
 	assure_root
-	update_system
 	task_enhanced_desktop
 	task_apps "$2"
 	task_development
@@ -300,6 +300,9 @@ main () {
 	    echo "You should NOT be root for this task."
 	    exit 1
 	fi
+    elif [[ $cmd == "update" ]]; then
+	assure_root
+	task_update_system
     else
 	usage
     fi
