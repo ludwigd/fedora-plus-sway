@@ -323,7 +323,7 @@ main () {
 	task_update_system
     elif [[ $cmd == "unattended" ]]; then
 	assure_root
-	tast_update_system
+	task_update_system
 	task_enhanced_desktop
 	task_apps "$2"
 	task_development
