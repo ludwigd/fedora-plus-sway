@@ -328,7 +328,7 @@ main () {
 	task_apps "$2"
 	task_development
 	task_publishing
-	sudo -u $SUDO_USER ./"$0" dotfiles
+	sudo -u $(who am i | cut -f1 -d" ") ./"$0" dotfiles
 	systemctl reboot
     else
 	usage
