@@ -67,21 +67,12 @@ task_enhanced_desktop () {
     subtask_printing
     
     dnf -y install \
-	adwaita-gtk2-theme \
-	adwaita-icon-theme \
 	clipman \
 	gammastep \
-	gnome-icon-theme \
-	gnome-keyring \
-	gnome-keyring-pam \
-	gnome-themes-extra \
 	i3status \
 	kanshi \
 	light \
-	lxmenu-data \
 	mate-polkit \
-	pcmanfm \
-	python3-i3ipc \
 	rofi \
 	wev \
 	xlsclients
@@ -97,16 +88,25 @@ task_apps () {
     local flatpak=$1
     
     dnf -y install \
+	adwaita-gtk2-theme \
+	adwaita-icon-theme \
 	android-file-transfer \
 	android-tools \
 	borgbackup \
 	distrobox \
 	emacs \
 	fish \
+	git-core \
+	gnome-icon-theme \
+	gnome-keyring \
+	gnome-keyring-pam \
+	gnome-themes-extra \
 	htop \
 	imv \
 	lynx \
+	lxmenu-data \
 	mutt \
+	pcmanfm \
 	podman \
 	powertop \
 	sshfs \
@@ -124,8 +124,10 @@ task_apps () {
 	    gimp \
 	    gstreamer1-plugin-libav \
 	    inkscape \
+	    keepassxc \
 	    libreoffice \
 	    libreoffice-x11 \
+	    mozilla-openh264 \
 	    mpv \
 	    quodlibet \
 	    xournalpp
@@ -142,6 +144,7 @@ task_apps () {
 		org.chromium.Chromium \
 		org.gimp.GIMP \
 		org.inkscape.Inkscape \
+		org.keepassxc.KeePassXC \
 		org.libreoffice.LibreOffice \
 		org.mozilla.firefox
 	
@@ -231,8 +234,21 @@ task_update_system () {
 
 # Dotfiles
 task_dotfiles () {
-    echo "Not implemented"
-    exit 1
+    # Check dependencies
+    if [[ ! $(which {git,python3}) ]]; then
+	exit 1
+    fi
+    
+    # Clone the repository
+    dotfiles=$HOME/.dotfiles
+    git clone --bare https://github.com/ludwigd/dotfiles $dotfiles
+
+    # Manage dotfiles the openSUSE way
+    # See: https://news.opensuse.org/2020/03/27/Manage-dotfiles-with-Git/
+    pushd .
+    cd $HOME
+    git --git-dir=$dotfiles --work-tree=$HOME checkout -f
+    popd
 }
 
 usage () {
@@ -241,19 +257,21 @@ usage () {
 
     echo -e "\\nTasks:"
     echo "  basic                   - just sway and vim (incl. audio and wifi support)"
-    echo "  enhanced                - an enhanced basic environment"
+    echo "  enhanced                - an enhanced environment compared to basic"
     echo "  apps [flatpak]          - desktop apps"
     echo "  development             - some programming languages and tools"
     echo "  publishing              - an opinionated selection of TeXlive collections and tools"
     echo "  everything [flatpak]    - enhanced + apps +  development + publishing"
     echo "  update                  - install updates (dnf + flatpak)"
-    echo "  dotfiles                - install dotfiles (requires git)"
+    echo "  dotfiles                - install dotfiles (requires enhanced + apps)"
+    echo "  unattended [flatpak]    - update + everything + dotfiles + reboot"
     
     echo -e "\\nApplications affected by the flatpak parameter:"
     echo "  Chromium"
     echo "  Firefox"
     echo "  GIMP"
     echo "  Inkscape"
+    echo "  KeepassXC"
     echo "  LibreOffice"
     echo "  mpv"
     echo "  Quodlibet"
@@ -303,6 +321,15 @@ main () {
     elif [[ $cmd == "update" ]]; then
 	assure_root
 	task_update_system
+    elif [[ $cmd == "unattended" ]]; then
+	assure_root
+	tast_update_system
+	task_enhanced_desktop
+	task_apps "$2"
+	task_development
+	task_publishing
+	sudo -u $SUDO_USER ./"$0" dotfiles
+	systemctl reboot
     else
 	usage
     fi
