@@ -68,6 +68,7 @@ task_enhanced_desktop () {
     
     dnf -y install \
 	clipman \
+	desktop-backgrounds-compat \
 	gammastep \
 	i3status \
 	kanshi \
