@@ -105,12 +105,12 @@ task_apps () {
 	htop \
 	imv \
 	lynx \
-	lxmenu-data \
 	mutt \
-	pcmanfm \
 	podman \
 	powertop \
+	ranger \
 	sshfs \
+	udiskie \
 	virt-manager \
 	xsane \
 	zathura \
