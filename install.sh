@@ -329,7 +329,20 @@ main () {
 	task_apps "$2"
 	task_development
 	task_publishing
-	sudo -u $(who am i | cut -f1 -d" ") ./"$0" dotfiles
+
+	# Who am I?
+	ME=$(who am i | cut -f1 -d" ")
+
+	# Add user to libvirt group
+	usermod -aG libvirt $ME
+
+	# Disable Red Hat Graphical Boot
+	grubby --remove-args=rhgb --update-kernel=ALL
+
+	# Install dotfiles
+	sudo -u $ME ./"$0" dotfiles
+
+	# Reboot
 	systemctl reboot
     else
 	usage
