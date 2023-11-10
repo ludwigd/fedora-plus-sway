@@ -236,7 +236,7 @@ task_update_system () {
 # Dotfiles
 task_dotfiles () {
     # Check dependencies
-    if [[ ! $(which {git,python3}) ]]; then
+    if [[ ! $(which git) ]]; then
 	exit 1
     fi
     
