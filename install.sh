@@ -74,7 +74,7 @@ task_enhanced_desktop () {
 	kanshi \
 	light \
 	mate-polkit \
-	rofi \
+	rofi-wayland \
 	wev \
 	xlsclients
 
