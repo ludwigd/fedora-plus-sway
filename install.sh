@@ -104,8 +104,10 @@ task_apps () {
 	gnome-themes-extra \
 	htop \
 	imv \
+	lxmenu-data \
 	lynx \
 	mutt \
+	pcmanfm \
 	podman \
 	powertop \
 	ranger \
