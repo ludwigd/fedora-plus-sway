@@ -104,14 +104,13 @@ task_apps () {
 	gnome-themes-extra \
 	htop \
 	imv \
-	lxmenu-data \
 	lynx \
 	mutt \
-	pcmanfm \
 	podman \
 	powertop \
 	ranger \
 	sshfs \
+	thunar \
 	udiskie \
 	virt-manager \
 	xsane \
