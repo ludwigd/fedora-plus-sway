@@ -126,7 +126,6 @@ task_apps () {
 	    firefox \
 	    gimp \
 	    gstreamer1-plugin-libav \
-	    inkscape \
 	    keepassxc \
 	    libreoffice \
 	    libreoffice-x11 \
@@ -146,7 +145,6 @@ task_apps () {
 		io.mpv.Mpv \
 		org.chromium.Chromium \
 		org.gimp.GIMP \
-		org.inkscape.Inkscape \
 		org.keepassxc.KeePassXC \
 		org.libreoffice.LibreOffice \
 		org.mozilla.firefox
@@ -200,6 +198,7 @@ task_publishing () {
 	hunspell \
 	hunspell-de \
 	ImageMagick \
+	inkscape \
 	pandoc \
 	texlive-collection-basic \
 	texlive-collection-bibtexextra \
@@ -273,7 +272,6 @@ usage () {
     echo "  Chromium"
     echo "  Firefox"
     echo "  GIMP"
-    echo "  Inkscape"
     echo "  KeepassXC"
     echo "  LibreOffice"
     echo "  mpv"
