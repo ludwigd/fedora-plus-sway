@@ -86,8 +86,6 @@ task_enhanced_desktop () {
 
 # Extra desktop apps
 task_apps () {
-    local flatpak=$1
-    
     dnf -y install \
 	adwaita-gtk2-theme \
 	adwaita-icon-theme \
@@ -97,6 +95,7 @@ task_apps () {
 	distrobox \
 	emacs \
 	fish \
+	flatpak \
 	git-core \
 	gnome-icon-theme \
 	gnome-keyring \
@@ -118,43 +117,19 @@ task_apps () {
 	zathura-plugins-all \
 	zathura-fish-completion
 
-    if [[ -z "$flatpak" ]]; then
-	dnf -y install \
-	    chromium \
-	    ffmpeg-free \
-	    firefox \
-	    gimp \
-	    gstreamer1-plugin-libav \
-	    keepassxc \
-	    libreoffice \
-	    libreoffice-x11 \
-	    mozilla-openh264 \
-	    mpv \
-	    quodlibet \
-	    xournalpp
-    elif [[ $flatpak == "flatpak" ]]; then
-	dnf -y install flatpak
+    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    flatpak remote-modify --enable flathub
 	
-	flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-	flatpak remote-modify --enable flathub
-	
-	flatpak install -y flathub \
-		com.github.xournalpp.xournalpp \
-		io.github.quodlibet.QuodLibet \
-		io.mpv.Mpv \
-		org.chromium.Chromium \
-		org.gimp.GIMP \
-		org.keepassxc.KeePassXC \
-		org.libreoffice.LibreOffice \
-		org.mozilla.firefox
-	
-	flatpak override \
-		--env=MOZ_ENABLE_WAYLAND=1 \
-		org.mozilla.firefox
-    else
-	echo "Unknown parameter '$flatpak'. Must be empty or 'flatpak'."
-	exit 1
-    fi
+    flatpak install -y flathub \
+	    com.github.xournalpp.xournalpp \
+	    io.github.quodlibet.QuodLibet \
+	    io.mpv.Mpv \
+	    org.chromium.Chromium \
+	    org.gimp.GIMP \
+	    org.inkscape.Inkscape \
+	    org.keepassxc.KeePassXC \
+	    org.libreoffice.LibreOffice \
+	    org.mozilla.firefox
 }
 
 # Development Tools
@@ -190,6 +165,17 @@ task_development () {
 
 # TeXlive and publishing
 task_publishing () {
+    # Note: This will also install some GUI programs not listed here
+    # explicitly. Maybe I should open a bug report aksing to make them
+    # weak dependencies (they are in Debian).
+    #
+    # - inkscape is required by texlive-xput which is part of the texlive-collection-pictures
+    # - mupdf is required by texlive-dvisvgm which is part of the texlive-collection-binextra
+    #
+    # This means that we end up having two versions of inkscape
+    # installed (dnf & flatpak). We will take care of that by hiding
+    # the .desktop file for the dnf version on a per-user level (hint:
+    # dotfiles).
     dnf -y install \
 	aspell \
 	aspell-de \
@@ -197,7 +183,6 @@ task_publishing () {
 	hunspell \
 	hunspell-de \
 	ImageMagick \
-	inkscape \
 	pandoc \
 	texlive-collection-basic \
 	texlive-collection-bibtexextra \
@@ -256,26 +241,16 @@ usage () {
     echo "install.sh <task>"
     echo "  This script installs my Fedora+Sway environment."
 
-    echo -e "\\nTasks:"
+    echo -e "\\nAvailable tasks:"
     echo "  basic                   - just sway and vim (incl. audio and wifi support)"
     echo "  enhanced                - an enhanced environment compared to basic"
-    echo "  apps [flatpak]          - desktop apps"
+    echo "  apps                    - desktop apps"
     echo "  development             - some programming languages and tools"
     echo "  publishing              - an opinionated selection of TeXlive collections and tools"
-    echo "  everything [flatpak]    - enhanced + apps +  development + publishing"
+    echo "  everything              - enhanced + apps +  development + publishing"
     echo "  update                  - install updates (dnf + flatpak)"
     echo "  dotfiles                - install dotfiles (requires enhanced + apps)"
-    echo "  unattended [flatpak]    - update + everything + dotfiles + reboot"
-    
-    echo -e "\\nApplications affected by the flatpak parameter:"
-    echo "  Chromium"
-    echo "  Firefox"
-    echo "  GIMP"
-    echo "  KeepassXC"
-    echo "  LibreOffice"
-    echo "  mpv"
-    echo "  Quodlibet"
-    echo "  Xournal++"
+    echo "  unattended              - update + everything + dotfiles + reboot"
 }
 
 assure_root () {
@@ -298,7 +273,7 @@ main () {
 	task_enhanced_desktop
     elif [[ $cmd == "apps" ]]; then
 	assure_root
-	task_apps "$2"
+	task_apps
     elif [[ $cmd == "development" ]]; then
 	assure_root
 	task_development
@@ -308,7 +283,7 @@ main () {
     elif [[ $cmd == "everything" ]]; then
 	assure_root
 	task_enhanced_desktop
-	task_apps "$2"
+	task_apps
 	task_development
 	task_publishing
     elif [[ $cmd == "dotfiles" ]]; then
@@ -325,7 +300,7 @@ main () {
 	assure_root
 	task_update_system
 	task_enhanced_desktop
-	task_apps "$2"
+	task_apps
 	task_development
 	task_publishing
 
