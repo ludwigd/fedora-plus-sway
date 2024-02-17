@@ -61,6 +61,7 @@ task_desktop () {
 
     dnf -y install \
 	@Standard \
+	brightnessctl \
 	clipman \
 	desktop-backgrounds-compat \
 	fish \
@@ -70,7 +71,6 @@ task_desktop () {
 	gnome-keyring-pam \
 	i3status \
 	kanshi \
-	light \
 	mate-polkit \
 	rofi-wayland \
 	sway \
