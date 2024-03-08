@@ -4,49 +4,49 @@ set -eo  pipefail
 # Wifi-support and basic networking tools
 subtask_network () {
     dnf -y install \
-	bluez \
-	iwlwifi-mvm-firmware \
-	NetworkManager-openvpn \
-	NetworkManager-openvpn-gnome \
-	NetworkManager-wifi \
-	nm-connection-editor \
-	nm-connection-editor-desktop
+        bluez \
+        iwlwifi-mvm-firmware \
+        NetworkManager-openvpn \
+        NetworkManager-openvpn-gnome \
+        NetworkManager-wifi \
+        nm-connection-editor \
+        nm-connection-editor-desktop
 }
 
 # Install pipewire along with some tools
 subtask_audio () {
     dnf -y install \
-	pavucontrol \
-	pipewire \
-	pipewire-pulseaudio \
-	playerctl \
-	pulseaudio-utils
+        pavucontrol \
+        pipewire \
+        pipewire-pulseaudio \
+        playerctl \
+        pulseaudio-utils
 }
 
 # Printing support
 subtask_printing () {
     dnf -y install \
-	cups \
-	ghostscript \
-	hplip \
-	system-config-printer \
-	--exclude PackageKit,PackageKit-glib
+        cups \
+        ghostscript \
+        hplip \
+        system-config-printer \
+        --exclude PackageKit,PackageKit-glib
 }
 
 # Fonts
 subtask_fonts () {
     dnf -y install \
-	dejavu-sans-fonts \
-	dejavu-sans-mono-fonts \
-	dejavu-serif-fonts \
-	fontawesome-fonts \
-	fontconfig \
-	google-noto-emoji-color-fonts \
-	google-noto-sans-cjk-ttc-fonts \
-	jetbrains-mono-fonts-all \
-	liberation-mono-fonts \
-	liberation-sans-fonts \
-	liberation-serif-fonts
+        dejavu-sans-fonts \
+        dejavu-sans-mono-fonts \
+        dejavu-serif-fonts \
+        fontawesome-fonts \
+        fontconfig \
+        google-noto-emoji-color-fonts \
+        google-noto-sans-cjk-ttc-fonts \
+        jetbrains-mono-fonts-all \
+        liberation-mono-fonts \
+        liberation-sans-fonts \
+        liberation-serif-fonts
 }
 
 # Desktop
@@ -60,103 +60,103 @@ task_desktop () {
     dnf -y copr enable ludwigd/sway-supplemental
 
     dnf -y install \
-	@Standard \
-	brightnessctl \
-	clipman \
-	desktop-backgrounds-compat \
-	fish \
-	gammastep \
-	git-core \
-	gnome-keyring \
-	gnome-keyring-pam \
-	i3status \
-	kanshi \
-	mate-polkit \
-	rofi-wayland \
-	sway \
-	swaybg \
-	swaycaffeine \
-	swayidle \
-	swaylock \
-	vim-enhanced \
-	wev \
-	xlsclients \
-	yaws
+        @Standard \
+        brightnessctl \
+        clipman \
+        desktop-backgrounds-compat \
+        fish \
+        gammastep \
+        git-core \
+        gnome-keyring \
+        gnome-keyring-pam \
+        i3status \
+        kanshi \
+        mate-polkit \
+        rofi-wayland \
+        sway \
+        swaybg \
+        swaycaffeine \
+        swayidle \
+        swaylock \
+        vim-enhanced \
+        wev \
+        xlsclients \
+        yaws
 }
 
 # Extra desktop apps
 task_apps () {
     dnf -y install \
-	adwaita-gtk2-theme \
-	adwaita-icon-theme \
-	android-file-transfer \
-	android-tools \
-	borgbackup \
-	distrobox \
-	emacs \
-	flatpak \
-	gnome-icon-theme \
-	gnome-themes-extra \
-	htop \
-	imv \
-	lynx \
-	mutt \
-	podman \
-	powertop \
-	ranger \
-	sshfs \
-	thunar \
-	udiskie \
-	virt-manager \
-	xsane \
-	zathura \
-	zathura-plugins-all \
-	zathura-fish-completion
+        adwaita-gtk2-theme \
+        adwaita-icon-theme \
+        android-file-transfer \
+        android-tools \
+        borgbackup \
+        distrobox \
+        emacs \
+        flatpak \
+        gnome-icon-theme \
+        gnome-themes-extra \
+        htop \
+        imv \
+        lynx \
+        mutt \
+        podman \
+        powertop \
+        ranger \
+        sshfs \
+        thunar \
+        udiskie \
+        virt-manager \
+        xsane \
+        zathura \
+        zathura-plugins-all \
+        zathura-fish-completion
 
     flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
     flatpak remote-modify --enable flathub
-	
+    
     flatpak install -y flathub \
-	    com.github.xournalpp.xournalpp \
-	    io.github.quodlibet.QuodLibet \
-	    io.mpv.Mpv \
-	    org.chromium.Chromium \
-	    org.gimp.GIMP \
-	    org.inkscape.Inkscape \
-	    org.keepassxc.KeePassXC \
-	    org.libreoffice.LibreOffice \
-	    org.mozilla.firefox
+            com.github.xournalpp.xournalpp \
+            io.github.quodlibet.QuodLibet \
+            io.mpv.Mpv \
+            org.chromium.Chromium \
+            org.gimp.GIMP \
+            org.inkscape.Inkscape \
+            org.keepassxc.KeePassXC \
+            org.libreoffice.LibreOffice \
+            org.mozilla.firefox
 }
 
 # Development Tools
 task_development () {
     dnf -y install \
-	autoconf \
-	automake \
-	bc \
-	binutils \
-	bison \
-	cargo \
-	cmake \
-	ctags \
-	flex \
-	gcc \
-	gcc-c++ \
-	gdb \
-	git \
-	glibc-devel \
-	java-latest-openjdk \
-	java-latest-openjdk-devel \
-	javacc \
-	make \
-	patch \
-	patchutils \
-	python3 \
-	python3-pip \
-	python3-virtualenv \
-	rust \
-	strace \
-	zstd
+        autoconf \
+        automake \
+        bc \
+        binutils \
+        bison \
+        cargo \
+        cmake \
+        ctags \
+        flex \
+        gcc \
+        gcc-c++ \
+        gdb \
+        git \
+        glibc-devel \
+        java-latest-openjdk \
+        java-latest-openjdk-devel \
+        javacc \
+        make \
+        patch \
+        patchutils \
+        python3 \
+        python3-pip \
+        python3-virtualenv \
+        rust \
+        strace \
+        zstd
 }
 
 # TeXlive and publishing
@@ -173,44 +173,44 @@ task_publishing () {
     # the .desktop file for the dnf version on a per-user level (hint:
     # dotfiles).
     dnf -y install \
-	aspell \
-	aspell-de \
-	aspell-en \
-	hunspell \
-	hunspell-de \
-	ImageMagick \
-	pandoc \
-	texlive-collection-basic \
-	texlive-collection-bibtexextra \
-	texlive-collection-binextra \
-	texlive-collection-context \
-	texlive-collection-fontsextra \
-	texlive-collection-fontsrecommended \
-	texlive-collection-fontutils \
-	texlive-collection-formatsextra \
-	texlive-collection-langenglish \
-	texlive-collection-langgerman \
-	texlive-collection-latex \
-	texlive-collection-latexextra \
-	texlive-collection-latexrecommended \
-	texlive-collection-luatex \
-	texlive-collection-mathscience \
-	texlive-collection-metapost \
-	texlive-collection-pictures \
-	texlive-collection-plaingeneric \
-	texlive-collection-pstricks \
-	texlive-collection-publishers \
-	texlive-collection-xetex \
-	texstudio \
-	xfig \
-	--exclude evince
+        aspell \
+        aspell-de \
+        aspell-en \
+        hunspell \
+        hunspell-de \
+        ImageMagick \
+        pandoc \
+        texlive-collection-basic \
+        texlive-collection-bibtexextra \
+        texlive-collection-binextra \
+        texlive-collection-context \
+        texlive-collection-fontsextra \
+        texlive-collection-fontsrecommended \
+        texlive-collection-fontutils \
+        texlive-collection-formatsextra \
+        texlive-collection-langenglish \
+        texlive-collection-langgerman \
+        texlive-collection-latex \
+        texlive-collection-latexextra \
+        texlive-collection-latexrecommended \
+        texlive-collection-luatex \
+        texlive-collection-mathscience \
+        texlive-collection-metapost \
+        texlive-collection-pictures \
+        texlive-collection-plaingeneric \
+        texlive-collection-pstricks \
+        texlive-collection-publishers \
+        texlive-collection-xetex \
+        texstudio \
+        xfig \
+        --exclude evince
 }
 
 # Updates
 task_update () {
     dnf update -y --refresh
     if [[ -f "/usr/bin/flatpak" ]]; then
-	flatpak -y update
+        flatpak -y update
     fi
 }
 
@@ -218,7 +218,7 @@ task_update () {
 task_dotfiles () {
     # Check dependencies
     if [[ ! $(which git) ]]; then
-	exit 1
+        exit 1
     fi
     
     # Clone the repository
@@ -249,8 +249,8 @@ usage () {
 
 assure_root () {
     if [ $UID -ne 0 ]; then
-	echo "You must be root to install software."
-	exit 1
+        echo "You must be root to install software."
+        exit 1
     fi
 }
 
@@ -258,53 +258,53 @@ main () {
     local cmd=$1
 
     if [[ -z "$cmd" ]]; then
-	usage
+        usage
     elif [[ $cmd == "desktop" ]]; then
-	assure_root
-	task_desktop
+        assure_root
+        task_desktop
     elif [[ $cmd == "apps" ]]; then
-	assure_root
-	task_apps
+        assure_root
+        task_apps
     elif [[ $cmd == "development" ]]; then
-	assure_root
-	task_development
+        assure_root
+        task_development
     elif [[ $cmd == "publishing" ]]; then
-	assure_root
-	task_publishing
+        assure_root
+        task_publishing
     elif [[ $cmd == "dotfiles" ]]; then
-	if [ $UID -ne 0 ]; then
-	    task_dotfiles
-	else
-	    echo "You should NOT be root for this task."
-	    exit 1
-	fi
+        if [ $UID -ne 0 ]; then
+            task_dotfiles
+        else
+            echo "You should NOT be root for this task."
+            exit 1
+        fi
     elif [[ $cmd == "update" ]]; then
-	assure_root
-	task_update
+        assure_root
+        task_update
     elif [[ $cmd == "everything" ]]; then
-	assure_root
-	task_update
-	task_desktop
-	task_apps
-	task_development
-	task_publishing
+        assure_root
+        task_update
+        task_desktop
+        task_apps
+        task_development
+        task_publishing
 
-	# Who am I?
-	ME=$(who am i | cut -f1 -d" ")
+        # Who am I?
+        ME=$(who am i | cut -f1 -d" ")
 
-	# Add user to libvirt group
-	usermod -aG libvirt $ME
+        # Add user to libvirt group
+        usermod -aG libvirt $ME
 
-	# Disable Red Hat Graphical Boot
-	grubby --remove-args=rhgb --update-kernel=ALL
+        # Disable Red Hat Graphical Boot
+        grubby --remove-args=rhgb --update-kernel=ALL
 
-	# Install dotfiles
-	sudo -u $ME ./"$0" dotfiles
+        # Install dotfiles
+        sudo -u $ME ./"$0" dotfiles
 
-	# Reboot
-	systemctl reboot
+        # Reboot
+        systemctl reboot
     else
-	usage
+        usage
     fi
 }
 
