@@ -87,16 +87,13 @@ task_desktop () {
 # Extra desktop apps
 task_apps () {
     dnf -y install \
-        adwaita-gtk2-theme \
         adwaita-icon-theme \
-        android-file-transfer \
         android-tools \
         borgbackup \
         distrobox \
         emacs \
         flatpak \
-        gnome-icon-theme \
-        gnome-themes-extra \
+        gvfs-mtp \
         htop \
         imv \
         lynx \
