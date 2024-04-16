@@ -52,7 +52,7 @@ subtask_fonts () {
 # Desktop
 task_desktop () {
     subtask_network
-    subtast_audio
+    subtask_audio
     subtask_fonts
     subtask_printing
 
