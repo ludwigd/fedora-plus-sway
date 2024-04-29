@@ -97,6 +97,7 @@ task_apps () {
         htop \
         imv \
         lynx \
+        mupdf \
         mutt \
         podman \
         powertop \
@@ -105,10 +106,7 @@ task_apps () {
         thunar \
         udiskie \
         virt-manager \
-        xsane \
-        zathura \
-        zathura-plugins-all \
-        zathura-fish-completion
+        xsane
 
     flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
     flatpak remote-modify --enable flathub
