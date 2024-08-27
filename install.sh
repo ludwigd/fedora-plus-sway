@@ -86,41 +86,42 @@ task_desktop () {
 
 # Extra desktop apps
 task_apps () {
+    dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+    
+    dnf config-manager --enable fedora-cisco-openh264
+
+    dnf -y install --best --allowerasing \
+        ffmpeg \
+        gstreamer1-plugin-libav \
+        mesa-va-drivers-freeworld \
+        mesa-vdpau-drivers-freeworld
+    
     dnf -y install \
         adwaita-icon-theme \
         android-tools \
         borgbackup \
+        chromium \
         distrobox \
         emacs \
-        flatpak \
+        firefox \
+        gimp \
         gvfs-mtp \
         htop \
         imv \
+        keepassxc \
         lynx \
-        mupdf \
+        mpv \
         mutt \
         podman \
         powertop \
-        ranger \
+        quodlibet \
         sshfs \
         thunar \
-        udiskie \
         virt-manager \
-        xsane
-
-    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-    flatpak remote-modify --enable flathub
-    
-    flatpak install -y flathub \
-            com.github.xournalpp.xournalpp \
-            io.github.quodlibet.QuodLibet \
-            io.mpv.Mpv \
-            org.chromium.Chromium \
-            org.gimp.GIMP \
-            org.inkscape.Inkscape \
-            org.keepassxc.KeePassXC \
-            org.libreoffice.LibreOffice \
-            org.mozilla.firefox
+        xsane \
+        zathura \
+        zathura-fish-completion \
+        zathura-plugins-all
 }
 
 # Development Tools
@@ -156,17 +157,6 @@ task_development () {
 
 # TeXlive and publishing
 task_publishing () {
-    # Note: This will also install some GUI programs not listed here
-    # explicitly. Maybe I should open a bug report aksing to make them
-    # weak dependencies (they are in Debian).
-    #
-    # - inkscape is required by texlive-xput which is part of the texlive-collection-pictures
-    # - mupdf is required by texlive-dvisvgm which is part of the texlive-collection-binextra
-    #
-    # This means that we end up having two versions of inkscape
-    # installed (dnf & flatpak). We will take care of that by hiding
-    # the .desktop file for the dnf version on a per-user level (hint:
-    # dotfiles).
     dnf -y install \
         aspell \
         aspell-de \
@@ -204,9 +194,6 @@ task_publishing () {
 # Updates
 task_update () {
     dnf update -y --refresh
-    if [[ -f "/usr/bin/flatpak" ]]; then
-        flatpak -y update
-    fi
 }
 
 # Dotfiles
@@ -233,7 +220,7 @@ usage () {
     echo "  This script installs my Fedora+Sway environment."
 
     echo -e "\\nAvailable tasks:"
-    echo "  update                  - install updates (dnf + flatpak)"
+    echo "  update                  - install updates (dnf only)"
     echo "  desktop                 - sway plus tools, network, audio, printing"
     echo "  apps                    - desktop apps"
     echo "  development             - some programming languages and tools"
