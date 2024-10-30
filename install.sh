@@ -28,7 +28,6 @@ subtask_printing () {
     dnf -y install \
         cups \
         ghostscript \
-        hplip \
         system-config-printer \
         --exclude PackageKit,PackageKit-glib
 }
