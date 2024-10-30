@@ -87,7 +87,7 @@ task_desktop () {
 task_apps () {
     dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
     
-    dnf config-manager --enable fedora-cisco-openh264
+    dnf config-manager setopt fedora-cisco-openh264.enabled=1
 
     dnf -y install --best --allowerasing \
         ffmpeg \
