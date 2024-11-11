@@ -59,7 +59,7 @@ task_desktop () {
     dnf -y copr enable ludwigd/sway-supplemental
 
     dnf -y install \
-        @Standard \
+        @standard \
         brightnessctl \
         clipman \
         desktop-backgrounds-compat \
