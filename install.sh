@@ -97,6 +97,7 @@ task_apps () {
     
     dnf -y install \
         adwaita-icon-theme \
+        aerc \
         android-tools \
         borgbackup \
         chromium \
@@ -108,9 +109,7 @@ task_apps () {
         htop \
         imv \
         keepassxc \
-        lynx \
         mpv \
-        mutt \
         podman \
         powertop \
         quodlibet \
