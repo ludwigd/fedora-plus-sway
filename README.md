@@ -16,7 +16,8 @@ printer drivers).
    additional groups or packages.
 3. After the installation is complete, reboot into the freshly
    installed system and log in as your normal user, i.e., not `root`.
-4. Run the following commands to execute the deployment script:
+4. Run the following commands to download the deployment script and
+   make it executable:
 ``` bash
 curl -L https://raw.githubusercontent.com/ludwigd/fedora-plus-sway/main/install.sh -o install.sh
 chmod +x install.sh
