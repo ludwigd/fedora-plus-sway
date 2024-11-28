@@ -113,6 +113,7 @@ task_apps () {
         podman \
         powertop \
         quodlibet \
+        ranger \
         sshfs \
         thunar \
         virt-manager \
