@@ -1,39 +1,47 @@
 #!/bin/bash
 set -eo  pipefail
 
-# Wifi-support and basic networking tools
-subtask_network () {
+# Desktop
+task_desktop () {
+    # Enable repo for swaycaffeine and yaws
+    dnf -y copr enable ludwigd/sway-supplemental
+
+    # Basic desktop
     dnf -y install \
+        @hardware-support \
+        @standard \
         bluez \
-        iwlwifi-mvm-firmware \
-        NetworkManager-openvpn \
-        NetworkManager-openvpn-gnome \
+        brightnessctl \
+        clipman \
+        fish \
+        foot\
+        gammastep \
+        git-core \
+        gnome-keyring \
+        gnome-keyring-pam \
+        i3status \
+        kanshi \
+        mate-polkit \
         NetworkManager-wifi \
         nm-connection-editor \
-        nm-connection-editor-desktop
-}
-
-# Install pipewire along with some tools
-subtask_audio () {
-    dnf -y install \
+        nm-connection-editor-desktop \
         pavucontrol \
         pipewire \
         pipewire-pulseaudio \
         playerctl \
-        pulseaudio-utils
-}
+        pulseaudio-utils \
+        rofi-wayland \
+        sway \
+        swaybg \
+        swaycaffeine \
+        swayidle \
+        swaylock \
+        vim-enhanced \
+        wev \
+        xlsclients \
+        yaws
 
-# Printing support
-subtask_printing () {
-    dnf -y install \
-        cups \
-        ghostscript \
-        system-config-printer \
-        --exclude PackageKit,PackageKit-glib
-}
-
-# Fonts
-subtask_fonts () {
+    # Fonts
     dnf -y install \
         dejavu-sans-fonts \
         dejavu-sans-mono-fonts \
@@ -46,68 +54,55 @@ subtask_fonts () {
         liberation-mono-fonts \
         liberation-sans-fonts \
         liberation-serif-fonts
-}
 
-# Desktop
-task_desktop () {
-    subtask_network
-    subtask_audio
-    subtask_fonts
-    subtask_printing
-
-    # Repo for swaycaffeine and yaws
-    dnf -y copr enable ludwigd/sway-supplemental
-
+    # Printing
     dnf -y install \
-        @standard \
-        brightnessctl \
-        clipman \
-        desktop-backgrounds-compat \
-        fish \
-        gammastep \
-        git-core \
-        gnome-keyring \
-        gnome-keyring-pam \
-        i3status \
-        kanshi \
-        mate-polkit \
-        rofi-wayland \
-        sway \
-        swaybg \
-        swaycaffeine \
-        swayidle \
-        swaylock \
-        vim-enhanced \
-        wev \
-        xlsclients \
-        yaws
+        @printing \
+        system-config-printer \
+        --exclude PackageKit,PackageKit-glib,samba-client
 }
 
-# Extra desktop apps
+# Extra desktop apps and enhanced experience
 task_apps () {
+    local gpu=$1
+    
+    # Enable RPMfusion
     dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-    
-    dnf config-manager setopt fedora-cisco-openh264.enabled=1
 
-    dnf -y install --best --allowerasing \
-        ffmpeg \
-        gstreamer1-plugin-libav \
-        mesa-va-drivers-freeworld \
-        mesa-vdpau-drivers-freeworld
-    
+    # Enable repo for openh264
+    if (( $(rpm -E %fedora) < 41 )); then
+        dnf config-manager --enable fedora-cisco-openh264
+    else
+        dnf config-manager setopt fedora-cisco-openh264.enabled=1
+    fi
+
+    # Install full ffmpeg and mesa from RPMfusion
+    local pkgs=( ffmpeg gstreamer1-plugin-libav libavcodec-freeworld )
+    case $gpu in
+        "intel")
+            pkgs+=( libva-intel-driver intel-media-driver )
+            ;;
+        "amd")
+            ;&
+        "*")
+            pkgs+=( mesa-va-drivers-freeworld mesa-vdpau-drivers-freeworld )
+            ;;
+    esac
+    dnf -y install --best --allowerasing "${pkgs[@]}"
+
+    # Apps and tools
     dnf -y install \
-        adwaita-icon-theme \
         aerc \
         android-tools \
         borgbackup \
         chromium \
-        distrobox \
         emacs \
         firefox \
         gimp \
         gvfs-mtp \
         htop \
         imv \
+        irssi \
         keepassxc \
         mpv \
         podman \
@@ -116,11 +111,15 @@ task_apps () {
         ranger \
         sshfs \
         thunar \
+        tuned \
         virt-manager \
         xsane \
         zathura \
         zathura-fish-completion \
         zathura-plugins-all
+
+    # Enable tuned
+    systemctl enable tuned
 }
 
 # Development Tools
@@ -215,17 +214,17 @@ task_dotfiles () {
 }
 
 usage () {
-    echo "install.sh <task>"
+    echo -e "install.sh <task> [\e[4mamd\e[0m|intel]"
     echo "  This script installs my Fedora+Sway environment."
 
     echo -e "\\nAvailable tasks:"
-    echo "  update                  - install updates (dnf only)"
-    echo "  desktop                 - sway plus tools, network, audio, printing"
-    echo "  apps                    - desktop apps"
-    echo "  development             - some programming languages and tools"
-    echo "  publishing              - an opinionated selection of TeXlive collections and tools"
-    echo "  dotfiles                - install dotfiles (requires desktop)"
-    echo "  everything              - all of the above + some vodoo + reboot"
+    echo "  update          - install updates (dnf only)"
+    echo "  desktop         - sway plus tools, network, audio, printing"
+    echo "  apps            - desktop apps"
+    echo "  development     - some programming languages and tools"
+    echo "  publishing      - an opinionated selection of TeXlive collections and tools"
+    echo "  dotfiles        - install dotfiles (requires desktop)"
+    echo "  unattended      - all of the above + some vodoo + reboot"
 }
 
 assure_root () {
@@ -237,6 +236,7 @@ assure_root () {
 
 main () {
     local cmd=$1
+    local gpu=$2
 
     if [[ -z "$cmd" ]]; then
         usage
@@ -245,7 +245,7 @@ main () {
         task_desktop
     elif [[ $cmd == "apps" ]]; then
         assure_root
-        task_apps
+        task_apps "$gpu"
     elif [[ $cmd == "development" ]]; then
         assure_root
         task_development
@@ -262,22 +262,16 @@ main () {
     elif [[ $cmd == "update" ]]; then
         assure_root
         task_update
-    elif [[ $cmd == "everything" ]]; then
+    elif [[ $cmd == "unattended" ]]; then
         assure_root
         task_update
         task_desktop
-        task_apps
+        task_apps "$gpu"
         task_development
         task_publishing
 
         # Who am I?
         ME=$(who am i | cut -f1 -d" ")
-
-        # Add user to libvirt group
-        usermod -aG libvirt $ME
-
-        # Disable Red Hat Graphical Boot
-        grubby --remove-args=rhgb --update-kernel=ALL
 
         # Install dotfiles
         sudo -u $ME ./"$0" dotfiles
