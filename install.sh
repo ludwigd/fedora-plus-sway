@@ -1,30 +1,32 @@
 #!/bin/bash
 set -eo  pipefail
 
-# Desktop
-task_desktop () {
-    # Enable repo for swaycaffeine and yaws
-    dnf -y copr enable ludwigd/sway-supplemental
-
-    # Basic desktop
+install_base () {
     dnf -y install \
-        @hardware-support \
         @standard \
-        bluez \
+        git \
+        make \
+        NetworkManager \
+        NetworkManager-tui \
+        NetworkManager-wifi \
+        tuned \
+        vim-enhanced
+
+    # enable tuned
+    systemctl enable tuned.service
+}
+
+install_wm () {
+    # Sway Supplemental COPR
+    dnf -y copr enable ludwigd/sway-supplemental
+    
+    dnf -y install \
         brightnessctl \
         clipman \
-        fish \
-        foot\
+        foot \
         gammastep \
-        git-core \
-        gnome-keyring \
-        gnome-keyring-pam \
         i3status \
         kanshi \
-        mate-polkit \
-        NetworkManager-wifi \
-        nm-connection-editor \
-        nm-connection-editor-desktop \
         pavucontrol \
         pipewire \
         pipewire-pulseaudio \
@@ -36,98 +38,71 @@ task_desktop () {
         swaycaffeine \
         swayidle \
         swaylock \
-        vim-enhanced \
         wev \
         xlsclients \
         yaws
-
-    # Fonts
-    dnf -y install \
-        dejavu-sans-fonts \
-        dejavu-sans-mono-fonts \
-        dejavu-serif-fonts \
-        fontawesome-fonts \
-        fontconfig \
-        google-noto-emoji-color-fonts \
-        google-noto-sans-cjk-ttc-fonts \
-        jetbrains-mono-fonts-all \
-        liberation-mono-fonts \
-        liberation-sans-fonts \
-        liberation-serif-fonts
-
-    # Printing
-    dnf -y install \
-        @printing \
-        system-config-printer \
-        --exclude PackageKit,PackageKit-glib,samba-client
 }
 
-# Extra desktop apps and enhanced experience
-task_apps () {
+setup_hwaccel () {
     local gpu=$1
+
+    if [[ -z $gpu ]]; then
+        echo "You have to specify whether your gpu is amd or intel"
+        exit 1
+    fi
     
-    # Enable RPMfusion
+    # RPMfusion
     dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
 
-    # Enable repo for openh264
-    if (( $(rpm -E %fedora) < 41 )); then
-        dnf config-manager --enable fedora-cisco-openh264
-    else
-        dnf config-manager setopt fedora-cisco-openh264.enabled=1
-    fi
-
-    # Install full ffmpeg and mesa from RPMfusion
+    # Install full ffmpeg and va drivers from RPMfusion
     local pkgs=( ffmpeg gstreamer1-plugin-libav libavcodec-freeworld )
     case $gpu in
         "intel")
             pkgs+=( libva-intel-driver intel-media-driver )
             ;;
         "amd")
-            ;&
-        "*")
             pkgs+=( mesa-va-drivers-freeworld mesa-vdpau-drivers-freeworld )
+            ;;
+        *)
+            echo "$gpu not in {amd, intel}"
+            exit 1
             ;;
     esac
     dnf -y install --best --allowerasing "${pkgs[@]}"
+}
 
-    # Apps and tools
+install_apps () {
     dnf -y install \
         aerc \
-        android-tools \
+        android-file-transfer \
         borgbackup \
         chromium \
         emacs \
         firefox \
         gimp \
-        gvfs-mtp \
         htop \
         imv \
+        inkscape \
         irssi \
         keepassxc \
+        libreoffice \
+        libreoffice-gtk3 \
         mpv \
+        mupdf \
         podman \
-        powertop \
         quodlibet \
         ranger \
-        sshfs \
-        thunar \
-        tuned \
+        udiskie \
         virt-manager \
-        xsane \
-        zathura \
-        zathura-fish-completion \
-        zathura-plugins-all
-
-    # Enable tuned
-    systemctl enable tuned
+        xournalpp \
+        xsane
 }
 
-# Development Tools
-task_development () {
+install_tools () {
     dnf -y install \
+        android-tools \
         autoconf \
         automake \
-        bc \
         binutils \
         bison \
         cargo \
@@ -137,12 +112,10 @@ task_development () {
         gcc \
         gcc-c++ \
         gdb \
-        git \
         glibc-devel \
         java-latest-openjdk \
         java-latest-openjdk-devel \
         javacc \
-        make \
         patch \
         patchutils \
         python3 \
@@ -151,10 +124,34 @@ task_development () {
         rust \
         strace \
         zstd
+
+    # link android udev rules
+    ln -s /usr/share/doc/android-tools/51-android.rules \
+       /etc/udev/rules.d/51-android.rules
 }
 
-# TeXlive and publishing
-task_publishing () {
+install_fonts () {
+    dnf -y install \
+        dejavu-sans-fonts \
+        dejavu-sans-mono-fonts \
+        dejavu-serif-fonts \
+        fontconfig \
+        google-noto-emoji-color-fonts \
+        google-noto-sans-cjk-ttc-fonts \
+        jetbrains-mono-fonts-all \
+        liberation-mono-fonts \
+        liberation-sans-fonts \
+        liberation-serif-fonts
+}
+
+install_cups () {
+    dnf -y install \
+        @printing \
+        system-config-printer \
+        --exclude PackageKit,PackageKit-glib,samba-client
+}
+
+install_texlive () {
     dnf -y install \
         aspell \
         aspell-de \
@@ -184,103 +181,105 @@ task_publishing () {
         texlive-collection-pstricks \
         texlive-collection-publishers \
         texlive-collection-xetex \
-        texstudio \
-        xfig \
         --exclude evince
 }
 
-# Updates
-task_update () {
-    dnf update -y --refresh
-}
-
-# Dotfiles
-task_dotfiles () {
+get_dotfiles () {
     # Check dependencies
     if [[ ! $(which git) ]]; then
         exit 1
     fi
+
+    # Who am I?
+    ME=$(who am i | cut -f1 -d" ")
     
     # Clone the repository
-    dotfiles=$HOME/.dotfiles
-    git clone --bare https://github.com/ludwigd/dotfiles $dotfiles
+    worktree=/home/$ME
+    gitdir=$worktree/.dotfiles
+    git clone --bare https://github.com/ludwigd/dotfiles $gitdir
 
     # Manage dotfiles the openSUSE way
     # See: https://news.opensuse.org/2020/03/27/Manage-dotfiles-with-Git/
     pushd .
     cd $HOME
-    git --git-dir=$dotfiles --work-tree=$HOME checkout -f
+    git --git-dir=$gitdir --work-tree=$worktree checkout -f
     popd
 }
 
-usage () {
-    echo -e "install.sh <task> [\e[4mamd\e[0m|intel]"
-    echo "  This script installs my Fedora+Sway environment."
-
-    echo -e "\\nAvailable tasks:"
-    echo "  update          - install updates (dnf only)"
-    echo "  desktop         - sway plus tools, network, audio, printing"
-    echo "  apps            - desktop apps"
-    echo "  development     - some programming languages and tools"
-    echo "  publishing      - an opinionated selection of TeXlive collections and tools"
-    echo "  dotfiles        - install dotfiles (requires desktop)"
-    echo "  unattended      - all of the above + some vodoo + reboot"
-}
-
-assure_root () {
-    if [ $UID -ne 0 ]; then
+check_root () {
+    if [ $EUID -ne 0 ]; then
         echo "You must be root to install software."
         exit 1
     fi
 }
 
+usage () {
+    echo "install.sh cmd+"
+    echo "    This script installs my setup for a Fedora Linux laptop."
+    echo
+    echo "Usage:"
+    echo "  base                 - install base packages"
+    echo "  wm                   - install wm packages"
+    echo "  apps                 - install apps"
+    echo "  fonts                - install additional fonts"
+    echo "  hwaccel (amd|intel)  - install stuff for hw accel from RPMfusion"
+    echo "  cups                 - install support for printing"
+    echo "  tools                - install tools commonly needed for development"
+    echo "  texlive              - install an opinionated selection of TeXlive packages"
+    echo "  dotfiles             - get dotfiles"
+}
+
 main () {
-    local cmd=$1
-    local gpu=$2
-
-    if [[ -z "$cmd" ]]; then
+    # if called w/o args
+    if [[ -z "$1" ]]; then
         usage
-    elif [[ $cmd == "desktop" ]]; then
-        assure_root
-        task_desktop
-    elif [[ $cmd == "apps" ]]; then
-        assure_root
-        task_apps "$gpu"
-    elif [[ $cmd == "development" ]]; then
-        assure_root
-        task_development
-    elif [[ $cmd == "publishing" ]]; then
-        assure_root
-        task_publishing
-    elif [[ $cmd == "dotfiles" ]]; then
-        if [ $UID -ne 0 ]; then
-            task_dotfiles
-        else
-            echo "You should NOT be root for this task."
-            exit 1
-        fi
-    elif [[ $cmd == "update" ]]; then
-        assure_root
-        task_update
-    elif [[ $cmd == "unattended" ]]; then
-        assure_root
-        task_update
-        task_desktop
-        task_apps "$gpu"
-        task_development
-        task_publishing
-
-        # Who am I?
-        ME=$(who am i | cut -f1 -d" ")
-
-        # Install dotfiles
-        sudo -u $ME ./"$0" dotfiles
-
-        # Reboot
-        systemctl reboot
-    else
-        usage
+        exit 1
     fi
+
+    while [[ -n $1 ]]; do
+        case $1 in
+            "base")
+                check_root
+                install_base
+                ;;
+            "wm")
+                check_root
+                install_wm
+                ;;
+            "apps")
+                check_root
+                install_apps
+                ;;
+            "fonts")
+                check_root
+                install_fonts
+                ;;
+            "hwaccel")
+                check_root
+                setup_hwaccel $2
+                shift
+                ;;
+            "cups")
+                check_root
+                install_cups
+                ;;
+            "tools")
+                check_root
+                install_tools
+                ;;
+            "texlive")
+                check_root
+                install_texlive
+                ;;
+            "dotfiles")
+                get_dotfiles
+                ;;
+            *)
+                echo "Unknown command: $1"
+                ;;
+        esac
+        shift
+    done
 }
 
 main "$@"

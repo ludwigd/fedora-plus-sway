@@ -10,7 +10,7 @@ printer drivers).
 ## Usage
 
 1. Download the /Everything/ ISO from
-   [[https://alt.fedoraproject.org/]] and burn it to CD/DVD/USB.
+   [here](https://alt.fedoraproject.org/) and burn it to CD/DVD/USB.
 2. Follow the installation process. Under "Software Selection" make
    sure to select "Fedora Custom Operating System" and do not choose
    additional groups or packages.
@@ -23,4 +23,3 @@ curl -L https://raw.githubusercontent.com/ludwigd/fedora-plus-sway/main/install.
 chmod +x install.sh
 ```
 5. Run `./install.sh` to see available options.
-6. Run `sudo ./install.sh <option>` to perform the desired action.
