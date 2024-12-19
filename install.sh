@@ -6,11 +6,10 @@ install_base () {
         @standard \
         git \
         make \
-        NetworkManager \
-        NetworkManager-tui \
-        NetworkManager-wifi \
         tuned \
-        vim-enhanced
+        vim-enhanced \
+        --exclude bash-color-prompt,default-editor \
+        --setopt install_weak_deps=False
 
     # enable tuned
     systemctl enable tuned.service
@@ -21,54 +20,28 @@ install_wm () {
     dnf -y copr enable ludwigd/sway-supplemental
     
     dnf -y install \
+        bluez \
         brightnessctl \
         clipman \
         foot \
         gammastep \
+        grim \
         i3status \
-        kanshi \
+        mesa-dri-drivers \
+        mesa-va-drivers \
+        NetworkManager-wifi \
         pavucontrol \
         pipewire \
         pipewire-pulseaudio \
-        playerctl \
         pulseaudio-utils \
         rofi-wayland \
         sway \
-        swaybg \
+        sway-systemd \
         swaycaffeine \
         swayidle \
         swaylock \
-        wev \
-        xlsclients \
-        yaws
-}
-
-setup_hwaccel () {
-    local gpu=$1
-
-    if [[ -z $gpu ]]; then
-        echo "You have to specify whether your gpu is amd or intel"
-        exit 1
-    fi
-    
-    # RPMfusion
-    dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-
-    # Install full ffmpeg and va drivers from RPMfusion
-    local pkgs=( ffmpeg gstreamer1-plugin-libav libavcodec-freeworld )
-    case $gpu in
-        "intel")
-            pkgs+=( libva-intel-driver intel-media-driver )
-            ;;
-        "amd")
-            pkgs+=( mesa-va-drivers-freeworld mesa-vdpau-drivers-freeworld )
-            ;;
-        *)
-            echo "$gpu not in {amd, intel}"
-            exit 1
-            ;;
-    esac
-    dnf -y install --best --allowerasing "${pkgs[@]}"
+        yaws \
+        --setopt install_weak_deps=False
 }
 
 install_apps () {
@@ -78,24 +51,57 @@ install_apps () {
         borgbackup \
         chromium \
         emacs \
+        ffmpeg-free \
         firefox \
         gimp \
         htop \
         imv \
-        inkscape \
         irssi \
         keepassxc \
-        libreoffice \
-        libreoffice-gtk3 \
         mpv \
-        mupdf \
-        podman \
-        quodlibet \
+        pandoc \
+        qt5-qtwayland \
         ranger \
+        sane-backends-drivers-scanners \
         udiskie \
-        virt-manager \
-        xournalpp \
-        xsane
+        xsane \
+        yt-dlp \
+        --setopt install_weak_deps=False
+
+    # we want weak deps here
+    dnf -y install \
+        podman \
+        virt-manager
+}
+
+install_fonts () {
+    dnf -y install \
+        dejavu-sans-fonts \
+        dejavu-sans-mono-fonts \
+        dejavu-serif-fonts \
+        fontconfig \
+        google-noto-color-emoji-fonts \
+        jetbrains-mono-fonts-all \
+        liberation-mono-fonts \
+        liberation-sans-fonts \
+        liberation-serif-fonts
+}
+
+fix_missing_codecs () {
+    # enable rpmfusion
+    dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+
+    # replace limited drivers and codecs
+    dnf -y install --best --allowerasing \
+        ffmpeg \
+        libavcodec-freeworld \
+        mesa-va-drivers-freeworld
+}
+
+install_cups () {
+    dnf -y install \
+        @printing \
+        --exclude PackageKit,PackageKit-glib,samba-client
 }
 
 install_tools () {
@@ -130,27 +136,6 @@ install_tools () {
        /etc/udev/rules.d/51-android.rules
 }
 
-install_fonts () {
-    dnf -y install \
-        dejavu-sans-fonts \
-        dejavu-sans-mono-fonts \
-        dejavu-serif-fonts \
-        fontconfig \
-        google-noto-emoji-color-fonts \
-        google-noto-sans-cjk-ttc-fonts \
-        jetbrains-mono-fonts-all \
-        liberation-mono-fonts \
-        liberation-sans-fonts \
-        liberation-serif-fonts
-}
-
-install_cups () {
-    dnf -y install \
-        @printing \
-        system-config-printer \
-        --exclude PackageKit,PackageKit-glib,samba-client
-}
-
 install_texlive () {
     dnf -y install \
         aspell \
@@ -159,7 +144,6 @@ install_texlive () {
         hunspell \
         hunspell-de \
         ImageMagick \
-        pandoc \
         texlive-collection-basic \
         texlive-collection-bibtexextra \
         texlive-collection-binextra \
@@ -190,11 +174,8 @@ get_dotfiles () {
         exit 1
     fi
 
-    # Who am I?
-    ME=$(who am i | cut -f1 -d" ")
-    
     # Clone the repository
-    worktree=/home/$ME
+    worktree=$HOME
     gitdir=$worktree/.dotfiles
     git clone --bare https://github.com/ludwigd/dotfiles $gitdir
 
@@ -214,72 +195,61 @@ check_root () {
 }
 
 usage () {
-    echo "install.sh cmd+"
+    echo "install.sh <cmd>"
     echo "    This script installs my setup for a Fedora Linux laptop."
     echo
-    echo "Usage:"
-    echo "  base                 - install base packages"
-    echo "  wm                   - install wm packages"
-    echo "  apps                 - install apps"
-    echo "  fonts                - install additional fonts"
-    echo "  hwaccel (amd|intel)  - install stuff for hw accel from RPMfusion"
-    echo "  cups                 - install support for printing"
-    echo "  tools                - install tools commonly needed for development"
-    echo "  texlive              - install an opinionated selection of TeXlive packages"
-    echo "  dotfiles             - get dotfiles"
+    echo "Commands:"
+    echo "  base             - install base packages"
+    echo "  wm               - install wm packages"
+    echo "  apps             - install apps"
+    echo "  fonts            - install additional fonts"
+    echo "  codecs           - install ffmpeg and mesa drivers from rpmfusion"
+    echo "  cups             - install support for printing"
+    echo "  tools            - install tools commonly needed for development"
+    echo "  texlive          - install an opinionated selection of TeXlive packages"
+    echo "  dotfiles         - get dotfiles"
 }
 
 main () {
-    # if called w/o args
-    if [[ -z "$1" ]]; then
+    local cmd=$1
+
+    if [[ -z "$cmd" ]]; then
         usage
         exit 1
+    elif [[ $cmd == "base" ]]; then
+        check_root
+        install_base
+    elif [[ $cmd == "wm" ]]; then
+        check_root
+        install_wm
+    elif [[ $cmd == "apps" ]]; then
+        check_root
+        install_apps
+    elif [[ $cmd == "fonts" ]]; then
+        check_root
+        install_fonts
+    elif [[ $cmd == "codecs" ]]; then
+        check_root
+        fix_missing_codecs
+    elif [[ $cmd == "cups" ]]; then
+        check_root
+        install_cups
+    elif [[ $cmd == "tools" ]]; then
+        check_root
+        install_tools
+    elif [[ $cmd == "texlive" ]]; then
+        check_root
+        install_texlive
+    elif [[ $cmd == "dotfiles" ]]; then
+        if [[ $EUID -eq 0 && $2 != "--force-root" ]]; then
+            echo "You should not run this as root. Append --force-root to do it anyway."
+            exit 1
+        fi
+        #get_dotfiles
+    else
+        echo "Unknown command: $cmd"
+        exit 1
     fi
-
-    while [[ -n $1 ]]; do
-        case $1 in
-            "base")
-                check_root
-                install_base
-                ;;
-            "wm")
-                check_root
-                install_wm
-                ;;
-            "apps")
-                check_root
-                install_apps
-                ;;
-            "fonts")
-                check_root
-                install_fonts
-                ;;
-            "hwaccel")
-                check_root
-                setup_hwaccel $2
-                shift
-                ;;
-            "cups")
-                check_root
-                install_cups
-                ;;
-            "tools")
-                check_root
-                install_tools
-                ;;
-            "texlive")
-                check_root
-                install_texlive
-                ;;
-            "dotfiles")
-                get_dotfiles
-                ;;
-            *)
-                echo "Unknown command: $1"
-                ;;
-        esac
-        shift
-    done
 }
 
 main "$@"
