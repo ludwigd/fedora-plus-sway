@@ -245,7 +245,7 @@ main () {
             echo "You should not run this as root. Append --force-root to do it anyway."
             exit 1
         fi
-        #get_dotfiles
+        get_dotfiles
     else
         echo "Unknown command: $cmd"
         exit 1
