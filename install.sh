@@ -7,8 +7,8 @@ install_base () {
         git \
         make \
         tuned \
+        vim-default-editor \
         vim-enhanced \
-        --exclude bash-color-prompt,default-editor \
         --setopt install_weak_deps=False
 
     # enable tuned
@@ -16,7 +16,7 @@ install_base () {
 }
 
 install_wm () {
-    # Sway Supplemental COPR
+    # Repo for swaycaffeine and yaws
     dnf -y copr enable ludwigd/sway-supplemental
     
     dnf -y install \
@@ -27,19 +27,16 @@ install_wm () {
         gammastep \
         grim \
         i3status \
-        mesa-dri-drivers \
-        mesa-va-drivers \
+        mesa-dri-drivers mesa-va-drivers \
         NetworkManager-wifi \
-        pavucontrol \
-        pipewire \
-        pipewire-pulseaudio \
-        pulseaudio-utils \
+        pipewire pipewire-pulseaudio wireplumber \
         rofi-wayland \
         sway \
         sway-systemd \
         swaycaffeine \
         swayidle \
         swaylock \
+        xdg-desktop-portal-wlr \
         yaws \
         --setopt install_weak_deps=False
 }
@@ -57,15 +54,15 @@ install_apps () {
         htop \
         imv \
         irssi \
-        keepassxc \
-        mpv \
+        keepassxc qt5-qtwayland \
+        mpv yt-dlp \
         pandoc \
-        qt5-qtwayland \
+        pavucontrol \
+        quodlibet \
         ranger \
-        sane-backends-drivers-scanners \
         udiskie \
-        xsane \
-        yt-dlp \
+        xsane sane-backends-drivers-scanners \
+        zathura zathura-bash-completion zathura-pdf-poppler \
         --setopt install_weak_deps=False
 
     # we want weak deps here
@@ -84,24 +81,17 @@ install_fonts () {
         jetbrains-mono-fonts-all \
         liberation-mono-fonts \
         liberation-sans-fonts \
-        liberation-serif-fonts
-}
-
-fix_missing_codecs () {
-    # enable rpmfusion
-    dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-
-    # replace limited drivers and codecs
-    dnf -y install --best --allowerasing \
-        ffmpeg \
-        libavcodec-freeworld \
-        mesa-va-drivers-freeworld
+        liberation-serif-fonts \
+        --setopt install_weak_deps=False
 }
 
 install_cups () {
     dnf -y install \
-        @printing \
-        --exclude PackageKit,PackageKit-glib,samba-client
+        cups \
+        cups-browsed \
+        cups-filters \
+        cups-filters-driverless \
+        --setopt install_weak_deps=False
 }
 
 install_tools () {
@@ -129,7 +119,8 @@ install_tools () {
         python3-virtualenv \
         rust \
         strace \
-        zstd
+        zstd \
+        --setopt install_weak_deps=False
 
     # link android udev rules
     ln -s /usr/share/doc/android-tools/51-android.rules \
@@ -165,7 +156,7 @@ install_texlive () {
         texlive-collection-pstricks \
         texlive-collection-publishers \
         texlive-collection-xetex \
-        --exclude evince
+        --setopt install_weak_deps=False
 }
 
 get_dotfiles () {
@@ -203,7 +194,6 @@ usage () {
     echo "  wm               - install wm packages"
     echo "  apps             - install apps"
     echo "  fonts            - install additional fonts"
-    echo "  codecs           - install ffmpeg and mesa drivers from rpmfusion"
     echo "  cups             - install support for printing"
     echo "  tools            - install tools commonly needed for development"
     echo "  texlive          - install an opinionated selection of TeXlive packages"
@@ -228,9 +218,6 @@ main () {
     elif [[ $cmd == "fonts" ]]; then
         check_root
         install_fonts
-    elif [[ $cmd == "codecs" ]]; then
-        check_root
-        fix_missing_codecs
     elif [[ $cmd == "cups" ]]; then
         check_root
         install_cups
@@ -245,7 +232,7 @@ main () {
             echo "You should not run this as root. Append --force-root to do it anyway."
             exit 1
         fi
-        #get_dotfiles
+        get_dotfiles
     else
         echo "Unknown command: $cmd"
         exit 1
