@@ -160,6 +160,15 @@ install_texlive () {
         --setopt install_weak_deps=False
 }
 
+install_mullvad () {
+    # add the repo
+    dnf -y config-manager addrepo \
+        --from-repofile=https://repository.mullvad.net/rpm/stable/mullvad.repo
+
+    # install mullvad
+    dnf -y install mullvad-vpn
+}
+
 get_dotfiles () {
     # Check dependencies
     if [[ ! $(which git) ]]; then
@@ -198,6 +207,7 @@ usage () {
     echo "  cups             - install support for printing"
     echo "  tools            - install tools commonly needed for development"
     echo "  texlive          - install an opinionated selection of TeXlive packages"
+    echo "  mullvad          - install the mullvad vpn client"
     echo "  dotfiles         - get dotfiles"
 }
 
@@ -228,6 +238,9 @@ main () {
     elif [[ $cmd == "texlive" ]]; then
         check_root
         install_texlive
+    elif [[ $cmd == "mullvad" ]]; then
+        check_root
+        install_mullvad
     elif [[ $cmd == "dotfiles" ]]; then
         if [[ $EUID -eq 0 && $2 != "--force-root" ]]; then
             echo "You should not run this as root. Append --force-root to do it anyway."
