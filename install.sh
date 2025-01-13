@@ -23,6 +23,7 @@ install_wm () {
         bluez \
         brightnessctl \
         clipman \
+        desktop-backgrounds-compat \
         foot \
         gammastep \
         grim \
