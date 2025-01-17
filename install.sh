@@ -9,6 +9,7 @@ install_base () {
         tuned \
         vim-default-editor \
         vim-enhanced \
+        --allowerasing \
         --setopt install_weak_deps=False
 
     # enable tuned
