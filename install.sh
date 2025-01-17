@@ -60,7 +60,7 @@ install_apps () {
         mpv yt-dlp \
         pandoc \
         pavucontrol \
-        quodlibet \
+        quodlibet gstreamer1-plugins-bad-free \
         ranger \
         udiskie \
         xsane sane-backends-drivers-scanners \
