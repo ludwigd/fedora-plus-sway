@@ -15,9 +15,6 @@ install_base () {
 
     # enable tuned
     systemctl enable tuned.service
-
-    # Disable Red Hat Graphical Boot
-    grubby --remove-args=rhgb --update-kernel=ALL
 }
 
 install_wm () {
