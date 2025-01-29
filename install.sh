@@ -18,29 +18,22 @@ install_base () {
 }
 
 install_wm () {
-    # Repo for swaycaffeine and yaws
+    # Repo for my Sway config and tools, see
+    #   https://copr.fedorainfracloud.org/coprs/ludwigd/sway-supplemental/
+    # for details.
     dnf -y copr enable ludwigd/sway-supplemental
     
     dnf -y install \
         bluez \
-        brightnessctl \
-        clipman \
-        desktop-backgrounds-compat \
-        foot \
-        gammastep \
-        grim \
-        i3status \
-        mesa-dri-drivers mesa-va-drivers \
+        mesa-dri-drivers \
+        mesa-va-drivers \
         NetworkManager-wifi \
-        pipewire pipewire-pulseaudio wireplumber \
-        rofi-wayland \
+        pipewire \
+        pipewire-pulseaudio \
         sway \
+        sway-config-ludwigd \
         sway-systemd \
-        swaycaffeine \
-        swayidle \
-        swaylock \
         xdg-desktop-portal-wlr \
-        yaws \
         --setopt install_weak_deps=False
 }
 
