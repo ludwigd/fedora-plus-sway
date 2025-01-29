@@ -51,13 +51,16 @@ install_apps () {
         imv \
         irssi \
         keepassxc qt5-qtwayland \
-        mpv yt-dlp \
+        mpv \
         pandoc \
         pavucontrol \
         quodlibet gstreamer1-plugins-bad-free \
         ranger \
         xsane sane-backends-drivers-scanners \
-        zathura zathura-bash-completion zathura-pdf-poppler \
+        yt-dlp \
+        zathura \
+        zathura-bash-completion \
+        zathura-pdf-poppler \
         --setopt install_weak_deps=False
 
     # we want weak deps here
