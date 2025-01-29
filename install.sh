@@ -7,6 +7,7 @@ install_base () {
         git \
         make \
         tuned \
+        udisks2 \
         vim-default-editor \
         vim-enhanced \
         --allowerasing \
@@ -65,7 +66,6 @@ install_apps () {
         pavucontrol \
         quodlibet gstreamer1-plugins-bad-free \
         ranger \
-        udiskie \
         xsane sane-backends-drivers-scanners \
         zathura zathura-bash-completion zathura-pdf-poppler \
         --setopt install_weak_deps=False
