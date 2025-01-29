@@ -117,6 +117,7 @@ install_tools () {
         python3-virtualenv \
         rust \
         strace \
+        tito \
         zstd \
         --setopt install_weak_deps=False
 
