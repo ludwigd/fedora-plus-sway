@@ -36,7 +36,6 @@ install_wm () {
         pipewire-pulseaudio \
         sway \
         sway-config-ludwigd \
-        sway-systemd \
         xdg-desktop-portal-wlr \
         --setopt install_weak_deps=False
 }
