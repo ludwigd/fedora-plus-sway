@@ -54,6 +54,9 @@ install_apps () {
         imv \
         irssi \
         keepassxc qt5-qtwayland \
+        libreoffice \
+        libreoffice-gtk3 \
+        libreoffice-x11 \
         mpv \
         pandoc \
         pavucontrol \
