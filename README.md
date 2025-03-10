@@ -1,7 +1,6 @@
 # Fedora Plus Sway
 
-Deployment script for a Fedora Linux desktop utilizing the Sway window
-manager.
+Deployment script for my Fedora Linux desktop.
 
 The package selection is somewhat opinionated and may not work for you
 personally (applications, tools) or even your system (firmware,
@@ -22,4 +21,5 @@ printer drivers).
 curl -L https://raw.githubusercontent.com/ludwigd/fedora-plus-sway/main/install.sh -o install.sh
 chmod +x install.sh
 ```
-5. Run `./install.sh` to see available options.
+5. Run `./install.sh` to see available tasks.
+6. Run `sudo ./install.sh <task>` to perform a task. 
