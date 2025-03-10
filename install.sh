@@ -123,6 +123,7 @@ install_tools () {
         python3-pip \
         python3-virtualenv \
         rust \
+        ShellCheck \
         strace \
         tito \
         zstd \
