@@ -32,6 +32,7 @@ install_wm () {
         mesa-dri-drivers \
         mesa-va-drivers \
         NetworkManager-wifi \
+        nm-connection-editor-desktop \
         pipewire \
         pipewire-pulseaudio \
         sway \
