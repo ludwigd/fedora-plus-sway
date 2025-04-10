@@ -175,6 +175,26 @@ install_mullvad () {
     dnf -y install mullvad-vpn
 }
 
+install_bitwarden () {
+    # Create directory
+    mkdir -p /opt/Bitwarden
+
+    # Download the AppImage
+    curl -L "https://bitwarden.com/download/?app=desktop&platform=linux&variant=appimage" --output /opt/Bitwarden/Bitwarden.AppImage
+
+    # Set x bit
+    chmod +x /opt/Bitwarden/Bitwarden.AppImage
+
+    # Create the .desktop file
+    cat >> /usr/share/applications/bitwarden.desktop <<EOF
+[Desktop Entry]
+Name=Bitwarden
+Exec=/opt/Bitwarden/Bitwarden.AppImage
+Icon=bitwarden
+Type=Application
+EOF
+}
+
 get_dotfiles () {
     # Check dependencies
     if [[ ! $(which git) ]]; then
@@ -214,6 +234,7 @@ usage () {
     echo "  tools            - install tools commonly needed for development"
     echo "  texlive          - install an opinionated selection of TeXlive packages"
     echo "  mullvad          - install the mullvad vpn client"
+    echo "  bitwarden        - install the bitwarden password manager"
     echo "  dotfiles         - get dotfiles"
 }
 
@@ -247,6 +268,9 @@ main () {
     elif [[ $cmd == "mullvad" ]]; then
         check_root
         install_mullvad
+    elif [[ $cmd == "bitwarden" ]]; then
+        check_root
+        install_bitwarden
     elif [[ $cmd == "dotfiles" ]]; then
         if [[ $EUID -eq 0 && $2 != "--force-root" ]]; then
             echo "You should not run this as root. Append --force-root to do it anyway."
