@@ -38,6 +38,7 @@ install_wm () {
         sway \
         sway-config-ludwigd \
         xdg-desktop-portal-wlr \
+        xorg-x11-server-Xwayland \
         --setopt install_weak_deps=False
 }
 
