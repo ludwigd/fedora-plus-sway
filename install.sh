@@ -85,7 +85,6 @@ install_fonts () {
         dejavu-serif-fonts \
         fontconfig \
         google-noto-color-emoji-fonts \
-        jetbrains-mono-fonts-all \
         liberation-mono-fonts \
         liberation-sans-fonts \
         liberation-serif-fonts \
