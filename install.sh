@@ -3,6 +3,7 @@ set -eo  pipefail
 
 install_base () {
     dnf -y install \
+        @hardware-support \
         @standard \
         git \
         make \
