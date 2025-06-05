@@ -7,7 +7,6 @@ install_base () {
         @standard \
         git \
         make \
-        plymouth-system-theme \
         tuned \
         udisks2 \
         vim-default-editor \
@@ -18,8 +17,8 @@ install_base () {
     # enable tuned
     systemctl enable tuned.service
 
-    # rebuild initramfs (for plymouth)
-    dracut -f
+    # Disable rhgb
+    grubby --remove-args="rhgb quiet" --update-kernel=ALL
 }
 
 install_wm () {
