@@ -3,14 +3,18 @@ set -eo  pipefail
 
 install_base () {
     dnf -y install \
+        @base-graphical \
+        @fonts \
         @hardware-support \
+        @networkmanager-submodules \
         @standard \
         git \
         make \
+        pipewire \
+        pipewire-pulseaudio \
         tuned \
         udisks2 \
         vim-default-editor \
-        vim-enhanced \
         --allowerasing \
         --setopt install_weak_deps=False
 
@@ -18,23 +22,16 @@ install_base () {
     systemctl enable tuned.service
 
     # Disable rhgb
-    grubby --remove-args="rhgb quiet" --update-kernel=ALL
+    grubby --remove-args="rhgb" --update-kernel=ALL
 }
 
-install_wm () {
+install_sway () {
     # Repo for my Sway config and tools, see
     #   https://copr.fedorainfracloud.org/coprs/ludwigd/sway-supplemental/
     # for details.
     dnf -y copr enable ludwigd/sway-supplemental
     
     dnf -y install \
-        bluez \
-        mesa-dri-drivers \
-        mesa-va-drivers \
-        NetworkManager-wifi \
-        nm-connection-editor-desktop \
-        pipewire \
-        pipewire-pulseaudio \
         sway \
         sway-config-ludwigd \
         xdg-desktop-portal-wlr \
@@ -49,64 +46,85 @@ install_apps () {
         borgbackup \
         chromium \
         emacs \
-        ffmpeg-free \
         firefox \
         gimp \
         htop \
         imv \
-        irssi \
-        keepassxc qt5-qtwayland \
-        libreoffice \
-        libreoffice-gtk3 \
-        libreoffice-x11 \
-        mpv \
+        keepassxc \
+        mc \
+        nm-connection-editor-desktop \
         pandoc \
-        pavucontrol \
-        quodlibet gstreamer1-plugins-bad-free \
         ranger \
-        xsane sane-backends-drivers-scanners \
-        yt-dlp \
         zathura \
         zathura-bash-completion \
         zathura-pdf-poppler \
         --setopt install_weak_deps=False
+}
 
+install_virtualization () {
     # we want weak deps here
     dnf -y install \
         podman \
+        podman-compose \
+        podman-machine \
         virt-manager
 }
 
-install_fonts () {
+install_multimedia () {
     dnf -y install \
-        dejavu-sans-fonts \
-        dejavu-sans-mono-fonts \
-        dejavu-serif-fonts \
-        fontconfig \
-        google-noto-color-emoji-fonts \
-        liberation-mono-fonts \
-        liberation-sans-fonts \
-        liberation-serif-fonts \
+        ffmpeg-free \
+        gstreamer1-plugins-bad-free \
+        mpv \
+        pavucontrol \
+        strawberry \
+        yt-dlp \
         --setopt install_weak_deps=False
 }
 
-install_cups () {
+install_printing () {
+    # just a minimal CUPS installtion
     dnf -y install \
         cups \
-        cups-browsed \
         cups-filters \
         cups-filters-driverless \
+        sane-backends-drivers-scanners \
+        xsane \
         --setopt install_weak_deps=False
 }
 
-install_tools () {
+install_vpn () {
     dnf -y install \
-        android-tools \
+        NetworkManager-openvpn \
+        NetworkManager-openvpn-gnome \
+        openresolv \
+        wireguard-tools \
+        --setopt install_weak_deps=False
+}
+
+install_python-development () {
+    dnf -y install \
+        python3 \
+        python3-lsp-server \
+        python3-pip \
+        python3-virtualenv \
+        --setopt install_weak_deps=False
+}
+
+install_rust-development () {
+    dnf -y install \
+        cargo \
+        rust \
+        rustfmt \
+        rust-analyzer \
+        rust-src \
+        --setopt install_weak_deps=False
+}
+
+install_c-development () {
+    dnf -y install \
         autoconf \
         automake \
-        binutils \
         bison \
-        cargo \
         cmake \
         ctags \
         flex \
@@ -114,104 +132,67 @@ install_tools () {
         gcc-c++ \
         gdb \
         glibc-devel \
-        java-latest-openjdk \
-        java-latest-openjdk-devel \
-        javacc \
-        patch \
-        patchutils \
-        python3 \
-        python3-pip \
-        python3-virtualenv \
-        rust \
-        ShellCheck \
-        strace \
-        tito \
-        zstd \
         --setopt install_weak_deps=False
-
-    # link android udev rules
-    ln -s /usr/share/doc/android-tools/51-android.rules \
-       /etc/udev/rules.d/51-android.rules
 }
 
-install_texlive () {
+install_shell-development () {
+    # not optimal, but does not fit anywhere else
     dnf -y install \
-        aspell \
-        aspell-de \
-        aspell-en \
-        hunspell \
-        hunspell-de \
-        ImageMagick \
-        texlive-collection-basic \
-        texlive-collection-bibtexextra \
-        texlive-collection-binextra \
-        texlive-collection-context \
-        texlive-collection-fontsextra \
-        texlive-collection-fontsrecommended \
-        texlive-collection-fontutils \
-        texlive-collection-formatsextra \
-        texlive-collection-langenglish \
-        texlive-collection-langgerman \
-        texlive-collection-latex \
-        texlive-collection-latexextra \
-        texlive-collection-latexrecommended \
-        texlive-collection-luatex \
-        texlive-collection-mathscience \
-        texlive-collection-metapost \
-        texlive-collection-pictures \
-        texlive-collection-plaingeneric \
-        texlive-collection-pstricks \
-        texlive-collection-publishers \
-        texlive-collection-xetex \
+        ShellCheck \
         --setopt install_weak_deps=False
 }
 
-install_mullvad () {
-    # add the repo
-    dnf -y config-manager addrepo \
-        --from-repofile=https://repository.mullvad.net/rpm/stable/mullvad.repo
-
-    # install mullvad
-    dnf -y install mullvad-vpn
-}
-
-install_bitwarden () {
-    # Create directory
-    mkdir -p /opt/Bitwarden
-
-    # Download the AppImage
-    curl -L "https://bitwarden.com/download/?app=desktop&platform=linux&variant=appimage" --output /opt/Bitwarden/Bitwarden.AppImage
-
-    # Set x bit
-    chmod +x /opt/Bitwarden/Bitwarden.AppImage
-
-    # Create the .desktop file
-    cat >> /usr/share/applications/bitwarden.desktop <<EOF
-[Desktop Entry]
-Name=Bitwarden
-Exec=/opt/Bitwarden/Bitwarden.AppImage
-Icon=bitwarden
-Type=Application
-EOF
+install_rpm-development () {
+    dnf -y install \
+        patch \
+        rpmdevtools \
+        tito \
+        --setopt install_weak_deps=False
 }
 
 get_dotfiles () {
     # Check dependencies
-    if [[ ! $(which git) ]]; then
+    if [[ ! $(which git sway-config-ludwigd) ]]; then
         exit 1
     fi
 
     # Clone the repository
-    worktree=$HOME
-    gitdir=$worktree/.dotfiles
-    git clone --bare https://github.com/ludwigd/dotfiles $gitdir
+    worktree="$HOME"
+    gitdir="$worktree"/.dotfiles
+    git clone --bare https://github.com/ludwigd/dotfiles "$gitdir"
 
     # Manage dotfiles the openSUSE way
     # See: https://news.opensuse.org/2020/03/27/Manage-dotfiles-with-Git/
     pushd .
-    cd $HOME
-    git --git-dir=$gitdir --work-tree=$worktree checkout -f
+    cd "$HOME"
+    git --git-dir="$gitdir" --work-tree="$worktree" checkout -f
     popd
+}
+
+install_pattern-home () {
+    install_base
+    install_sway
+    install_apps
+    install_multimedia
+    install_printing
+    install_virtualization
+    install_vpn
+    install_python-development
+    install_rust-development
+    install_c-development
+    install_rpm-development
+    install_shell-development
+}
+
+install_pattern-work () {
+    install_base
+    install_sway
+    install_apps
+    install_multimedia
+    install_virtualization
+    install_vpn
+    install_python-development
+    install_shell-development
 }
 
 check_root () {
@@ -222,20 +203,27 @@ check_root () {
 }
 
 usage () {
-    echo "install.sh <cmd>"
-    echo "    This script installs my setup for a Fedora Linux laptop."
+    echo "${0##*/} <group|pattern>"
+    echo "    A nice way to setup my machines."
     echo
-    echo "Commands:"
+    echo "Groups:"
     echo "  base             - install base packages"
-    echo "  wm               - install wm packages"
+    echo "  sway             - a preconfigured tiling window manager"
     echo "  apps             - install apps"
-    echo "  fonts            - install additional fonts"
-    echo "  cups             - install support for printing"
-    echo "  tools            - install tools commonly needed for development"
-    echo "  texlive          - install an opinionated selection of TeXlive packages"
-    echo "  mullvad          - install the mullvad vpn client"
-    echo "  bitwarden        - install the bitwarden password manager"
-    echo "  dotfiles         - get dotfiles"
+    echo "  multimedia       - play audio and video files"
+    echo "  printing         - print and scan your documents"
+    echo "  virtualization   - run virtual machines (and containers)"
+    echo "  vpn              - connect to OpenVPN or Wireguard networks"
+    echo "  dotfiles         - get ludwigd's dotfiles"
+    echo "  python-dev       - Fedora 🫶 Python"
+    echo "  rust-dev         - the rust toolchain"
+    echo "  c-dev            - c++ < c"
+    echo "  rpm-dev          - build rpm packages"
+    echo "  sh-dev           - tools for (better) shell scripting"
+    echo
+    echo "Patterns:"
+    echo "  home             - default setup for home computing"
+    echo "  work             - default setup for work"
 }
 
 main () {
@@ -247,38 +235,53 @@ main () {
     elif [[ $cmd == "base" ]]; then
         check_root
         install_base
-    elif [[ $cmd == "wm" ]]; then
+    elif [[ $cmd == "sway" ]]; then
         check_root
-        install_wm
+        install_sway
     elif [[ $cmd == "apps" ]]; then
         check_root
         install_apps
-    elif [[ $cmd == "fonts" ]]; then
+    elif [[ $cmd == "multimedia" ]]; then
         check_root
-        install_fonts
-    elif [[ $cmd == "cups" ]]; then
+        install_multimedia
+    elif [[ $cmd == "printing" ]]; then
         check_root
-        install_cups
-    elif [[ $cmd == "tools" ]]; then
+        install_printing
+    elif [[ $cmd == "virtualization" ]]; then
         check_root
-        install_tools
-    elif [[ $cmd == "texlive" ]]; then
+        install_virtualization
+    elif [[ $cmd == "vpn" ]]; then
         check_root
-        install_texlive
-    elif [[ $cmd == "mullvad" ]]; then
-        check_root
-        install_mullvad
-    elif [[ $cmd == "bitwarden" ]]; then
-        check_root
-        install_bitwarden
+        install_vpn
     elif [[ $cmd == "dotfiles" ]]; then
         if [[ $EUID -eq 0 && $2 != "--force-root" ]]; then
             echo "You should not run this as root. Append --force-root to do it anyway."
             exit 1
         fi
         get_dotfiles
+    elif [[ $cmd == "python-dev" ]]; then
+        check_root
+        install_python-development
+    elif [[ $cmd == "rust-dev" ]]; then
+        check_root
+        install_rust-development
+    elif [[ $cmd == "c-dev" ]]; then
+        check_root
+        install_c-development
+    elif [[ $cmd == "rpm-dev" ]]; then
+        check_root
+        install_rpm-development
+    elif [[ $cmd == "sh-dev" ]]; then
+        check_root
+        install_shell-development
+    elif [[ $cmd = "home" ]]; then
+        check_root
+        install_pattern-home
+    elif [[ $cmd == "work" ]]; then
+        check_root
+        install_pattern-work
     else
-        echo "Unknown command: $cmd"
+        echo "Unknown group or pattern: $cmd"
         exit 1
     fi
 }
