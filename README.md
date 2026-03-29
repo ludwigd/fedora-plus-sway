@@ -1,5 +1,7 @@
 # Fedora Plus Sway
 
+**This repository won't get any updates, as I switched to an atomic/immutable setup. You can find it [here](https://github.com/ludwigd/fedora-sway-bootc).**
+
 Deployment script for my Fedora Linux desktop.
 
 The package selection is somewhat opinionated and may not work for you
